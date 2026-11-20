@@ -21,24 +21,5 @@
   "styles": [
     "styles/codex.css"
   ],
-  "packs": [
-    {
-      "name": "disciplinas",
-      "label": "Disciplinas",
-      "path": "packs/disciplinas.db",
-      "type": "JournalEntry"
-    },
-    {
-      "name": "clans",
-      "label": "Clãs",
-      "path": "packs/clans.db",
-      "type": "JournalEntry"
-    },
-    {
-      "name": "predadores",
-      "label": "Tipos de Predador",
-      "path": "packs/predadores.db",
-      "type": "JournalEntry"
-    }
-  ]
+  "packs": []
 }
