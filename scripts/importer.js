@@ -78,34 +78,69 @@ function parsePdfText(text) {
   }
   return entries;
 }
+async function ensurePowerPack() {
+  const collection = "world.vtm5e-codex-disciplinas";
+  let pack = game.packs.get(collection);
+  if (pack) return pack;
+  if (!game.user.isGM) throw new Error("Somente o Narrador pode criar o compêndio.");
+  return CompendiumCollection.createCompendium({
+    name: "vtm5e-codex-disciplinas",
+    label: "VTM5e Codex — Disciplinas",
+    type: "Item",
+    package: "world",
+    system: "wod5e"
+  });
+}
+function toItemSource(p) {
+  const html = [
+    `<h2>${escapeHtml(p.discipline)} — Level ${p.level}</h2>`,
+    p.description ? `<h3>Description</h3><p>${escapeHtml(p.description).replace(/\\n/g,"<br>")}</p>` : "",
+    p.cost ? `<h3>Cost</h3><p>${escapeHtml(p.cost)}</p>` : "",
+    p.dicePools ? `<h3>Dice Pools</h3><p>${escapeHtml(p.dicePools)}</p>` : "",
+    p.system ? `<h3>System</h3><p>${escapeHtml(p.system).replace(/\\n/g,"<br>")}</p>` : "",
+    p.duration ? `<h3>Duration</h3><p>${escapeHtml(p.duration)}</p>` : "",
+    p.prerequisites ? `<h3>Prerequisites</h3><p>${escapeHtml(p.prerequisites)}</p>` : "",
+    p.amalgam ? `<h3>Amalgam</h3><p>${escapeHtml(p.amalgam)}</p>` : "",
+    p.source || p.page ? `<p><em>${escapeHtml(p.source)} ${p.page ? `— p. ${p.page}` : ""}</em></p>` : ""
+  ].filter(Boolean).join("");
+  return {
+    name:p.name,
+    type:"power",
+    img:"icons/magic/perception/eye-ringed-glow-angry-large-red.webp",
+    system:{
+      level:p.level,
+      cost:0,
+      discipline:({Animalism:"animalism",Auspex:"auspex","Blood Sorcery":"sorcery",Celerity:"celerity",Dominate:"dominate",Fortitude:"fortitude",Obfuscate:"obfuscate",Oblivion:"oblivion",Potence:"potence",Presence:"presence",Protean:"protean"})[p.discipline],
+      selected:false,
+      dicepool:{},
+      description:html,
+      macroid:""
+    },
+    flags:{[MODULE_ID]:{imported:true,discipline:p.discipline,level:p.level,page:p.page,source:p.source,originalFields:p}}
+  };
+}
 async function importPowers(powers) {
   const normalized=powers.map(normalizePower);
-  const bad=normalized.map((p,i)=>({i,p,errors:validate(p)})).filter(x=>x.errors.length);
+  const bad=normalized.map(p=>({p,errors:validate(p)})).filter(x=>x.errors.length);
   if(bad.length) throw new Error(`${bad.length} registro(s) precisam de revisão. Primeiro problema: ${bad[0].p.name||"(sem nome)"} — ${bad[0].errors.join(", ")}.`);
-  const catalogResponse=await fetch(`modules/${MODULE_ID}/data/powers.json`);
-  const catalog=catalogResponse.ok?await catalogResponse.json():{disciplines:[]};
-  const existing=new Map((catalog.disciplines||[]).map(p=>[`${p.discipline}|${p.name}`,p]));
+  if(game.system.id!=="wod5e") throw new Error("Este importador requer World of Darkness 5e.");
+  if(!game.user.isGM) throw new Error("Entre como Narrador (GM) para importar no compêndio.");
+  const pack=await ensurePowerPack();
+  const docs=await pack.getDocuments();
+  const existing=new Map(docs.map(doc=>[`${doc.getFlag(MODULE_ID,"discipline")||doc.system.discipline}|${doc.name}`,doc]));
   let added=0,updated=0;
   for(const p of normalized){
     const key=`${p.discipline}|${p.name}`;
     const old=existing.get(key);
-    const record={
-      discipline:p.discipline,level:p.level,page:p.page,name:p.name,
-      summary:p.description,description:p.description,
-      source:p.source,
-      mechanics:{cost:p.cost,dicePool:p.dicePools,system:p.system,duration:p.duration,prerequisites:p.prerequisites,amalgam:p.amalgam},
-      importData:p,
-      rouseCost:Number((p.cost.match(/(\\d+)\\s*(?:Rouse Check|Rouse Checks)/i)||[])[1]||0),
-      dicepoolPaths:old?.dicepoolPaths||[]
-    };
-    if(old) updated++; else added++;
-    existing.set(key,record);
+    const source=toItemSource(p);
+    if(old){await old.update(source);updated++;}
+    else {await Item.implementation.createDocuments([source],{pack:pack.collection});added++;}
   }
-  const payload={schemaVersion:1,sourceTitle:"User imported content",disciplines:[...existing.values()]};
+  const payload={schemaVersion:1,sourceTitle:"User imported content",disciplines:normalized};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
   const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");a.href=url;a.download="vtm5e-codex-powers.json";a.click();URL.revokeObjectURL(url);
-  notify(`Importação preparada: ${added} novos e ${updated} atualizados. Baixe o JSON e carregue-o no repositório para manter o catálogo versionado.`);
+  const a=document.createElement("a");a.href=url;a.download="vtm5e-codex-imported-powers.json";a.click();URL.revokeObjectURL(url);
+  notify(`Importação concluída: ${added} poderes adicionados e ${updated} atualizados no compêndio. Um JSON de backup foi baixado.`);
   return {added,updated};
 }
 export async function openImporter() {
