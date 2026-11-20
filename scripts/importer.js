@@ -32,6 +32,7 @@ function validate(p) {
   if(!DISCIPLINES.includes(p.discipline)) errors.push("Disciplina inválida");
   if(!Number.isInteger(p.level)||p.level<1||p.level>5) errors.push("nível deve ser de 1 a 5");
   if(!p.description) errors.push("descrição vazia");
+  if(!p.cost && !p.dicePools && !p.system) errors.push("campos mecânicos ausentes");
   return errors;
 }
 async function readJson(file) {
@@ -62,34 +63,72 @@ async function readPdf(file) {
   for (let n = 1; n <= pdf.numPages; n++) {
     const page = await pdf.getPage(n);
     const content = await page.getTextContent();
-    textPages.push(content.items.map(item => item.str).join(" "));
+    // Reconstruct text lines from PDF coordinates; joining every token with
+    // spaces destroys the heading/source/field structure used by this PDF.
+    const rows = new Map();
+    for (const item of content.items) {
+      if (!item.str?.trim()) continue;
+      const y = Math.round(item.transform?.[5] ?? 0);
+      if (!rows.has(y)) rows.set(y, []);
+      rows.get(y).push({ x: item.transform?.[4] ?? 0, text: item.str });
+    }
+    const lines = [...rows.entries()]
+      .sort((a,b) => b[0]-a[0])
+      .map(([,items]) => items.sort((a,b)=>a.x-b.x).map(x=>x.text).join(" ").trim());
+    textPages.push(lines.join("\\n"));
   }
   const entries = parsePdfText(textPages.join("\\n"));
   if (!entries.length) throw new Error("O PDF foi aberto, mas nenhum poder foi reconhecido automaticamente. Use o template JSON e revise os campos manualmente.");
   return entries;
 }
 function parsePdfText(text) {
-  const entries=[];
-  const titleRe=/\b(Animalism|Auspex|Blood Sorcery|Celerity|Dominate|Fortitude|Obfuscate|Oblivion|Potence|Presence|Protean)\s+(?:Level\s+)?([1-5])\b/gi;
-  const matches=[...text.matchAll(titleRe)];
-  for(let i=0;i<matches.length;i++){
-    const start=matches[i].index+matches[i][0].length;
-    const end=matches[i+1]?.index??text.length;
-    const block=text.slice(start,end);
-    const name=(block.match(/^\s*([A-Z][A-Za-z’'() -]{2,65})/m)||[])[1]?.trim();
-    if(!name) continue;
-    const field=(label,next)=>{const re=new RegExp(label+"\\s*:?\\s*([\\s\\S]*?)(?="+next+"|$)","i");return (block.match(re)||[])[1]?.trim()||"";};
+  const lines = text.split(/\\r?\\n/).map(line => line.replace(/\\s+/g," ").trim());
+  const entries = [];
+  let discipline = "";
+  let level = 0;
+  const isDiscipline = line => DISCIPLINES.some(d => d.toLowerCase() === line.toLowerCase());
+  const isLevel = line => /^Level\\s+([1-5])$/i.test(line);
+  const isField = line => /^■\\s*(Cost|Dice Pools?|System|Duration|Prerequisite|Amalgam)\\s*:/i.test(line);
+  const clean = value => value.replace(/^■\\s*/,"").trim();
+  for (let i=0;i<lines.length;i++) {
+    const line=lines[i];
+    if (isDiscipline(line)) { discipline=DISCIPLINES.find(d=>d.toLowerCase()===line.toLowerCase()); continue; }
+    const lm=line.match(/^Level\\s+([1-5])$/i);
+    if (lm) { level=Number(lm[1]); continue; }
+    if (!discipline || !level || !line || isField(line) || /^\\[.*pag/i.test(line)) continue;
+
+    // A power heading is followed by a bracketed source line, e.g. [Core Rulebook, pag 245].
+    let sourceIndex=i+1;
+    while(sourceIndex<lines.length && !lines[sourceIndex]) sourceIndex++;
+    if(sourceIndex>=lines.length || !/^\\[.*(?:pag|page)\\s*\\d+/i.test(lines[sourceIndex])) continue;
+
+    const name=line.replace(/\\s+/g," ").trim();
+    const source=lines[sourceIndex].replace(/^\\[|\\]$/g,"").trim();
+    const fields={description:[],cost:[],dicePools:[],system:[],duration:[],prerequisites:[],amalgam:[]};
+    let current="description";
+    let j=sourceIndex+1;
+    for(;j<lines.length;j++){
+      const row=lines[j];
+      if(!row) continue;
+      if(isDiscipline(row) || isLevel(row)) break;
+      const fm=row.match(/^■\\s*(Cost|Dice Pools?|System|Duration|Prerequisite|Amalgam)\\s*:\\s*(.*)$/i);
+      if(fm){
+        const key=/^cost$/i.test(fm[1])?"cost":/^dice pools?$/i.test(fm[1])?"dicePools":/^system$/i.test(fm[1])?"system":/^duration$/i.test(fm[1])?"duration":/^prerequisite$/i.test(fm[1])?"prerequisites":"amalgam";
+        current=key;
+        if(fm[2]) fields[current].push(fm[2]);
+        continue;
+      }
+      if(/^\\[.*(?:pag|page)\\s*\\d+/i.test(row)) break;
+      fields[current].push(row);
+    }
+    const value=key=>fields[key].join(" ").replace(/\\s+/g," ").trim();
     entries.push(normalizePower({
-      name,discipline:matches[i][1],level:Number(matches[i][2]),
-      description:field("Description","Cost|Dice Pools?|System|Duration|Prerequisite|Amalgam"),
-      cost:field("Cost","Dice Pools?|System|Duration|Prerequisite|Amalgam"),
-      dicePools:field("Dice Pools?","System|Duration|Prerequisite|Amalgam"),
-      system:field("System","Duration|Prerequisite|Amalgam"),
-      duration:field("Duration","Prerequisite|Amalgam"),
-      prerequisites:field("Prerequisite","Amalgam"),
-      amalgam:field("Amalgam","$"),
-      source:"PDF importado"
+      name,discipline,level,source,page:Number((source.match(/(?:pag|page)\\s*(\\d+)/i)||[])[1]||0),
+      description:value("description"),cost:value("cost"),dicePools:value("dicePools"),
+      system:value("system"),duration:value("duration"),prerequisites:value("prerequisites"),
+      amalgam:value("amalgam")
     }));
+    i=j-1;
   }
   return entries;
 }
