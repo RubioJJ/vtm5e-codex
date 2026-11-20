@@ -1,0 +1,44 @@
+{
+  "id": "vtm5e-codex",
+  "title": "VTM5e Codex",
+  "description": "Compêndios comunitários para organizar Disciplinas, Clãs e Tipos de Predador de Vampire: The Masquerade 5ª edição.",
+  "version": "0.1.0",
+  "authors": [
+    {
+      "name": "RubioJJ"
+    }
+  ],
+  "url": "https://github.com/RubioJJ/vtm5e-codex",
+  "manifest": "https://github.com/RubioJJ/vtm5e-codex/releases/latest/download/module.json",
+  "download": "https://github.com/RubioJJ/vtm5e-codex/releases/latest/download/module.zip",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "styles/codex.css"
+  ],
+  "packs": [
+    {
+      "name": "disciplinas",
+      "label": "Disciplinas",
+      "path": "packs/disciplinas.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "clans",
+      "label": "Clãs",
+      "path": "packs/clans.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "predadores",
+      "label": "Tipos de Predador",
+      "path": "packs/predadores.db",
+      "type": "JournalEntry"
+    }
+  ]
+}
