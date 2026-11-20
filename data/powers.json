@@ -1179,6 +1179,48 @@
       "level": 4,
       "page": 195,
       "name": "Metamorphosis"
+    },
+    {
+      "discipline": "Protean",
+      "level": 5,
+      "name": "Blood Form",
+      "page": 195
+    },
+    {
+      "discipline": "Protean",
+      "level": 5,
+      "name": "The Heart of Darkness",
+      "page": 196
+    },
+    {
+      "discipline": "Protean",
+      "level": 5,
+      "name": "Master Of Forms",
+      "page": 196
+    },
+    {
+      "discipline": "Protean",
+      "level": 5,
+      "name": "Mist Form",
+      "page": 197
+    },
+    {
+      "discipline": "Protean",
+      "level": 5,
+      "name": "One With The Land",
+      "page": 197
+    },
+    {
+      "discipline": "Protean",
+      "level": 5,
+      "name": "Swarm",
+      "page": 198
+    },
+    {
+      "discipline": "Protean",
+      "level": 5,
+      "name": "The Unfettered Heart",
+      "page": 199
     }
   ]
 }
