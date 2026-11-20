@@ -43,8 +43,15 @@ const valuePaths = paths.map(path => path + ".value");
 const selectors = ["disciplines", "disciplines." + discipline];
 let basicDice = 0;
 if (valuePaths.length) basicDice = await WOD5E.api.getBasicDice({ valuePaths, actor });
-const advancedDice = await WOD5E.api.getAdvancedDice({ actor });
+let advancedDice = await WOD5E.api.getAdvancedDice({ actor });
 const hasPool = valuePaths.length > 0;
+if (actor.system.gamesystem === "vampire" && actor.type !== "ghoul") {
+  advancedDice = Math.min(basicDice, advancedDice);
+  basicDice = Math.max(basicDice - advancedDice, 0);
+} else if (actor.system.gamesystem === "werewolf") {
+  advancedDice = Math.min(basicDice, advancedDice);
+  basicDice = Math.max(basicDice - advancedDice, 0);
+}
 if (hasPool) {
   await WOD5E.api.Roll({
     basicDice, advancedDice, actor, data: actor.system, title,
