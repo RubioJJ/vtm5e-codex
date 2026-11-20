@@ -1,0 +1,1184 @@
+{
+  "sourceTitle": "All the Disciplines for Vampire V5",
+  "sourceUpdated": "2025-07-31",
+  "sourceFile": "All the Disciplines for Vampire V5",
+  "licenseNote": "Catálogo de nomes, níveis e referências de página; descrições e regras completas não são reproduzidas.",
+  "disciplines": [
+    {
+      "discipline": "Animalism",
+      "level": 1,
+      "page": 16,
+      "name": "Bond Famulus"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 1,
+      "page": 16,
+      "name": "Sense the Beast"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 2,
+      "page": 17,
+      "name": "Animal Messenger"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 2,
+      "page": 17,
+      "name": "Atavism"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 2,
+      "page": 18,
+      "name": "Feral Whispers"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 3,
+      "page": 18,
+      "name": "Animal Succulence"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 3,
+      "page": 19,
+      "name": "Messenger’s Command"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 3,
+      "page": 19,
+      "name": "Plague of Beasts"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 3,
+      "page": 20,
+      "name": "Quell the Beast"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 3,
+      "page": 20,
+      "name": "Scent Of Prey"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 3,
+      "page": 20,
+      "name": "Unliving Hive"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 4,
+      "page": 21,
+      "name": "Augury"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 4,
+      "page": 22,
+      "name": "Awaken the Parasite"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 4,
+      "page": 23,
+      "name": "Subsume the Spirit"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 4,
+      "page": 23,
+      "name": "Sway The Flock"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 5,
+      "page": 24,
+      "name": "Animal Dominion"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 5,
+      "page": 24,
+      "name": "Coax The Bestial Temper"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 5,
+      "page": 25,
+      "name": "Drawing Out The Beast"
+    },
+    {
+      "discipline": "Animalism",
+      "level": 5,
+      "page": 25,
+      "name": "Spirit Walk"
+    },
+    {
+      "discipline": "Auspex",
+      "level": 1,
+      "page": 26,
+      "name": "Heightened Senses"
+    },
+    {
+      "discipline": "Auspex",
+      "level": 1,
+      "page": 26,
+      "name": "Sense the Unseen"
+    },
+    {
+      "discipline": "Auspex",
+      "level": 2,
+      "page": 27,
+      "name": "Panacea"
+    },
+    {
+      "discipline": "Auspex",
+      "level": 2,
+      "page": 28,
+      "name": "Premonition"
+    },
+    {
+      "discipline": "Auspex",
+      "level": 2,
+      "page": 28,
+      "name": "Reveal Temperament"
+    },
+    {
+      "discipline": "Auspex",
+      "level": 2,
+      "page": 29,
+      "name": "Unerring Pursuit"
+    },
+    {
+      "discipline": "Auspex",
+      "level": 3,
+      "page": 29,
+      "name": "Fatal Flaw"
+    },
+    {
+      "discipline": "Auspex",
+      "level": 3,
+      "page": 30,
+      "name": "Haruspex"
+    },
+    {
+      "discipline": "Auspex",
+      "level": 3,
+      "page": 30,
+      "name": "Scry the Soul"
+    },
+    {
+      "discipline": "Auspex",
+      "level": 3,
+      "page": 31,
+      "name": "Share the Senses"
+    },
+    {
+      "discipline": "Auspex",
+      "level": 3,
+      "page": 31,
+      "name": "Vermin Vision (The Eyes of Beasts)"
+    },
+    {
+      "discipline": "Auspex",
+      "level": 4,
+      "page": 32,
+      "name": "Heart Laid Bare"
+    },
+    {
+      "discipline": "Auspex",
+      "level": 4,
+      "page": 33,
+      "name": "Spirit’s Touch"
+    },
+    {
+      "discipline": "Auspex",
+      "level": 5,
+      "page": 33,
+      "name": "Clairvoyance"
+    },
+    {
+      "discipline": "Auspex",
+      "level": 5,
+      "page": 34,
+      "name": "Possession"
+    },
+    {
+      "discipline": "Auspex",
+      "level": 5,
+      "page": 35,
+      "name": "Telepathy"
+    },
+    {
+      "discipline": "Auspex",
+      "level": 5,
+      "page": 35,
+      "name": "Unburdening The Bestial Soul"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 1,
+      "page": 37,
+      "name": "Corrosive Vitae"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 1,
+      "page": 37,
+      "name": "Shape the Sanguine Sacrament"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 1,
+      "page": 38,
+      "name": "A Taste for Blood"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 1,
+      "page": 38,
+      "name": "Koldunic Sorcery"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 2,
+      "page": 39,
+      "name": "Blood’s Curse"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 2,
+      "page": 40,
+      "name": "Extinguish Vitae"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 2,
+      "page": 40,
+      "name": "Scour Secrets"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 3,
+      "page": 41,
+      "name": "Blood of Potency"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 3,
+      "page": 41,
+      "name": "Scorpion’s Touch"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 3,
+      "page": 42,
+      "name": "Transitive Bond"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 3,
+      "page": 42,
+      "name": "Ripples of the Heart"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 4,
+      "page": 43,
+      "name": "Blood Aegis"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 4,
+      "page": 43,
+      "name": "Fulminating Vitae"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 4,
+      "page": 44,
+      "name": "Marionette"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 4,
+      "page": 44,
+      "name": "Theft of Vitae"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 5,
+      "page": 45,
+      "name": "Baal’s Caress"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 5,
+      "page": 45,
+      "name": "Cauldron of Blood"
+    },
+    {
+      "discipline": "Blood Sorcery",
+      "level": 5,
+      "page": 46,
+      "name": "Reclamation Of Vitae"
+    },
+    {
+      "discipline": "Celerity",
+      "level": 1,
+      "page": 101,
+      "name": "Cat’s Grace"
+    },
+    {
+      "discipline": "Celerity",
+      "level": 1,
+      "page": 101,
+      "name": "Fluent Swiftness"
+    },
+    {
+      "discipline": "Celerity",
+      "level": 1,
+      "page": 102,
+      "name": "Rapid Reflexes"
+    },
+    {
+      "discipline": "Celerity",
+      "level": 2,
+      "page": 102,
+      "name": "Fleetness"
+    },
+    {
+      "discipline": "Celerity",
+      "level": 2,
+      "page": 102,
+      "name": "Rush Job"
+    },
+    {
+      "discipline": "Celerity",
+      "level": 3,
+      "page": 103,
+      "name": "Blink"
+    },
+    {
+      "discipline": "Celerity",
+      "level": 3,
+      "page": 104,
+      "name": "A Thousand Cuts"
+    },
+    {
+      "discipline": "Celerity",
+      "level": 3,
+      "page": 104,
+      "name": "Traversal"
+    },
+    {
+      "discipline": "Celerity",
+      "level": 3,
+      "page": 105,
+      "name": "Weaving"
+    },
+    {
+      "discipline": "Celerity",
+      "level": 4,
+      "page": 105,
+      "name": "Blurred Momentum"
+    },
+    {
+      "discipline": "Celerity",
+      "level": 4,
+      "page": 105,
+      "name": "Draught of Elegance"
+    },
+    {
+      "discipline": "Celerity",
+      "level": 4,
+      "page": 106,
+      "name": "Unerring Aim"
+    },
+    {
+      "discipline": "Celerity",
+      "level": 4,
+      "page": 106,
+      "name": "Unseen Strike"
+    },
+    {
+      "discipline": "Celerity",
+      "level": 5,
+      "page": 107,
+      "name": "Lightning Strike"
+    },
+    {
+      "discipline": "Celerity",
+      "level": 5,
+      "page": 107,
+      "name": "Split Second"
+    },
+    {
+      "discipline": "Dominate",
+      "level": 1,
+      "page": 109,
+      "name": "Cloud Memory"
+    },
+    {
+      "discipline": "Dominate",
+      "level": 1,
+      "page": 109,
+      "name": "Compel"
+    },
+    {
+      "discipline": "Dominate",
+      "level": 1,
+      "page": 109,
+      "name": "Slavish Devotion"
+    },
+    {
+      "discipline": "Dominate",
+      "level": 2,
+      "page": 110,
+      "name": "Dementation"
+    },
+    {
+      "discipline": "Dominate",
+      "level": 2,
+      "page": 110,
+      "name": "Domitor’s Favor"
+    },
+    {
+      "discipline": "Dominate",
+      "level": 2,
+      "page": 111,
+      "name": "Mesmerize"
+    },
+    {
+      "discipline": "Dominate",
+      "level": 2,
+      "page": 111,
+      "name": "The Stolen Voice"
+    },
+    {
+      "discipline": "Dominate",
+      "level": 3,
+      "page": 112,
+      "name": "The Forgetful Mind"
+    },
+    {
+      "discipline": "Dominate",
+      "level": 3,
+      "page": 112,
+      "name": "Submerged Directive"
+    },
+    {
+      "discipline": "Dominate",
+      "level": 4,
+      "page": 112,
+      "name": "Ancestral Dominion"
+    },
+    {
+      "discipline": "Dominate",
+      "level": 4,
+      "page": 113,
+      "name": "Implant Suggestion"
+    },
+    {
+      "discipline": "Dominate",
+      "level": 4,
+      "page": 113,
+      "name": "Rationalize"
+    },
+    {
+      "discipline": "Dominate",
+      "level": 4,
+      "page": 114,
+      "name": "Tabula Rasa"
+    },
+    {
+      "discipline": "Dominate",
+      "level": 5,
+      "page": 115,
+      "name": "Lethe’s Call"
+    },
+    {
+      "discipline": "Dominate",
+      "level": 5,
+      "page": 115,
+      "name": "Mass Manipulation"
+    },
+    {
+      "discipline": "Dominate",
+      "level": 5,
+      "page": 115,
+      "name": "Terminal Decree"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 1,
+      "page": 116,
+      "name": "Fluent Endurance"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 1,
+      "page": 117,
+      "name": "Resilience"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 1,
+      "page": 117,
+      "name": "Unswayable Mind"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 2,
+      "page": 117,
+      "name": "Earth’s Perseverance"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 2,
+      "page": 118,
+      "name": "Enduring Beasts"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 2,
+      "page": 118,
+      "name": "Invigorating Vitae"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 2,
+      "page": 118,
+      "name": "Obdurate"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 2,
+      "page": 119,
+      "name": "Toughness"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 3,
+      "page": 119,
+      "name": "Calloused Soul"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 3,
+      "page": 120,
+      "name": "Defy Bane"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 3,
+      "page": 120,
+      "name": "Fortify the Inner Facade"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 3,
+      "page": 121,
+      "name": "Seal the Beast’s Maw"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 3,
+      "page": 121,
+      "name": "Valeren"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 4,
+      "page": 122,
+      "name": "Draught of Endurance"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 4,
+      "page": 122,
+      "name": "Gorgon’s Scales"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 4,
+      "page": 123,
+      "name": "Shatter"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 5,
+      "page": 123,
+      "name": "Flesh of Marble"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 5,
+      "page": 123,
+      "name": "Meat Shields"
+    },
+    {
+      "discipline": "Fortitude",
+      "level": 5,
+      "page": 124,
+      "name": "Prowess From Pain"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 1,
+      "page": 125,
+      "name": "Cloak of Shadows"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 1,
+      "page": 126,
+      "name": "Ensconce"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 1,
+      "page": 126,
+      "name": "Silence of Death"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 2,
+      "page": 127,
+      "name": "Cache"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 2,
+      "page": 127,
+      "name": "Chimestry"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 2,
+      "page": 127,
+      "name": "Doubletalk"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 2,
+      "page": 128,
+      "name": "Ghost’s Passing"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 2,
+      "page": 128,
+      "name": "Unseen Passage"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 2,
+      "page": 128,
+      "name": "Ventriloquism"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 3,
+      "page": 129,
+      "name": "Fata Morgana"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 3,
+      "page": 130,
+      "name": "Guise of the Departed"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 3,
+      "page": 130,
+      "name": "Ghost In The Machine"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 3,
+      "page": 131,
+      "name": "Mask of a Thousand Faces"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 3,
+      "page": 131,
+      "name": "Mask Of Isolation"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 3,
+      "page": 132,
+      "name": "Mental Maze"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 3,
+      "page": 133,
+      "name": "Mind Masque"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 4,
+      "page": 133,
+      "name": "Conceal"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 4,
+      "page": 134,
+      "name": "Seclusion"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 4,
+      "page": 134,
+      "name": "Vanish"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 5,
+      "page": 135,
+      "name": "Cloak the Gathering"
+    },
+    {
+      "discipline": "Obfuscate",
+      "level": 5,
+      "page": 135,
+      "name": "Impostor’s Guise"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 1,
+      "page": 137,
+      "name": "Ashes To Ashes"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 1,
+      "page": 137,
+      "name": "The Binding Fetter"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 1,
+      "page": 138,
+      "name": "Oblivion’s Sight"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 1,
+      "page": 138,
+      "name": "Shadow Cloak"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 2,
+      "page": 139,
+      "name": "Arms Of Ahriman"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 2,
+      "page": 139,
+      "name": "Fatal Prediction"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 2,
+      "page": 140,
+      "name": "Fatal Precognition"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 2,
+      "page": 140,
+      "name": "Shadow Cast"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 2,
+      "page": 141,
+      "name": "Where The Veil Thins"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 3,
+      "page": 142,
+      "name": "Aura Of Decay"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 3,
+      "page": 143,
+      "name": "Passion Feast"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 3,
+      "page": 143,
+      "name": "Shadow Perspective"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 3,
+      "page": 144,
+      "name": "Shadow Servant"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 3,
+      "page": 144,
+      "name": "Touch Of Oblivion"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 4,
+      "page": 145,
+      "name": "Necrotic Plague"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 4,
+      "page": 145,
+      "name": "Profane the Sanctified"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 4,
+      "page": 146,
+      "name": "Stygian Shroud"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 4,
+      "page": 146,
+      "name": "Umbrous Cluth"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 5,
+      "page": 147,
+      "name": "The Darkness Within"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 5,
+      "page": 147,
+      "name": "Shadow Step"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 5,
+      "page": 148,
+      "name": "Skuld Fulfilled"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 5,
+      "page": 148,
+      "name": "Tenebrous Avatar"
+    },
+    {
+      "discipline": "Oblivion",
+      "level": 5,
+      "page": 149,
+      "name": "Withering Spirit"
+    },
+    {
+      "discipline": "Potence",
+      "level": 1,
+      "page": 171,
+      "name": "Fluent Strength"
+    },
+    {
+      "discipline": "Potence",
+      "level": 1,
+      "page": 171,
+      "name": "Lethal Body"
+    },
+    {
+      "discipline": "Potence",
+      "level": 1,
+      "page": 172,
+      "name": "Soaring Leap"
+    },
+    {
+      "discipline": "Potence",
+      "level": 2,
+      "page": 172,
+      "name": "Prowess"
+    },
+    {
+      "discipline": "Potence",
+      "level": 2,
+      "page": 172,
+      "name": "Relentless Grasp"
+    },
+    {
+      "discipline": "Potence",
+      "level": 3,
+      "page": 173,
+      "name": "Brutal Feed"
+    },
+    {
+      "discipline": "Potence",
+      "level": 3,
+      "page": 173,
+      "name": "Exuberance"
+    },
+    {
+      "discipline": "Potence",
+      "level": 3,
+      "page": 174,
+      "name": "Spark of Rage"
+    },
+    {
+      "discipline": "Potence",
+      "level": 3,
+      "page": 174,
+      "name": "Uncanny Grip"
+    },
+    {
+      "discipline": "Potence",
+      "level": 3,
+      "page": 174,
+      "name": "Wrecker"
+    },
+    {
+      "discipline": "Potence",
+      "level": 4,
+      "page": 175,
+      "name": "Crash Down"
+    },
+    {
+      "discipline": "Potence",
+      "level": 4,
+      "page": 175,
+      "name": "Draught of Might"
+    },
+    {
+      "discipline": "Potence",
+      "level": 5,
+      "page": 176,
+      "name": "Earthshock"
+    },
+    {
+      "discipline": "Potence",
+      "level": 5,
+      "page": 176,
+      "name": "Fist of Caine"
+    },
+    {
+      "discipline": "Potence",
+      "level": 5,
+      "page": 177,
+      "name": "Subtle Hammer"
+    },
+    {
+      "discipline": "Presence",
+      "level": 1,
+      "page": 178,
+      "name": "Awe"
+    },
+    {
+      "discipline": "Presence",
+      "level": 1,
+      "page": 178,
+      "name": "Daunt"
+    },
+    {
+      "discipline": "Presence",
+      "level": 1,
+      "page": 179,
+      "name": "Eyes of The Serpent"
+    },
+    {
+      "discipline": "Presence",
+      "level": 2,
+      "page": 179,
+      "name": "Lingering Kiss"
+    },
+    {
+      "discipline": "Presence",
+      "level": 2,
+      "page": 180,
+      "name": "Melpominee"
+    },
+    {
+      "discipline": "Presence",
+      "level": 3,
+      "page": 180,
+      "name": "Clear the Field"
+    },
+    {
+      "discipline": "Presence",
+      "level": 3,
+      "page": 181,
+      "name": "Dread Gaze"
+    },
+    {
+      "discipline": "Presence",
+      "level": 3,
+      "page": 181,
+      "name": "Entrancement"
+    },
+    {
+      "discipline": "Presence",
+      "level": 3,
+      "page": 182,
+      "name": "Passion Leech"
+    },
+    {
+      "discipline": "Presence",
+      "level": 3,
+      "page": 182,
+      "name": "Thrown Voice"
+    },
+    {
+      "discipline": "Presence",
+      "level": 3,
+      "page": 183,
+      "name": "True Love’s Face"
+    },
+    {
+      "discipline": "Presence",
+      "level": 4,
+      "page": 183,
+      "name": "Inflame Desire"
+    },
+    {
+      "discipline": "Presence",
+      "level": 4,
+      "page": 184,
+      "name": "Irresistible Voice"
+    },
+    {
+      "discipline": "Presence",
+      "level": 4,
+      "page": 184,
+      "name": "Magnum Opus"
+    },
+    {
+      "discipline": "Presence",
+      "level": 4,
+      "page": 185,
+      "name": "Suffuse The Edifice"
+    },
+    {
+      "discipline": "Presence",
+      "level": 4,
+      "page": 186,
+      "name": "Summon"
+    },
+    {
+      "discipline": "Presence",
+      "level": 4,
+      "page": 186,
+      "name": "Wingman"
+    },
+    {
+      "discipline": "Presence",
+      "level": 5,
+      "page": 187,
+      "name": "Majesty"
+    },
+    {
+      "discipline": "Presence",
+      "level": 5,
+      "page": 187,
+      "name": "Star Magnetism"
+    },
+    {
+      "discipline": "Protean",
+      "level": 1,
+      "page": 188,
+      "name": "Eyes of the Beast"
+    },
+    {
+      "discipline": "Protean",
+      "level": 1,
+      "page": 188,
+      "name": "Squirm"
+    },
+    {
+      "discipline": "Protean",
+      "level": 1,
+      "page": 189,
+      "name": "Weight of the Feather"
+    },
+    {
+      "discipline": "Protean",
+      "level": 2,
+      "page": 189,
+      "name": "Feral Weapons"
+    },
+    {
+      "discipline": "Protean",
+      "level": 2,
+      "page": 190,
+      "name": "Serpent’s Kiss"
+    },
+    {
+      "discipline": "Protean",
+      "level": 2,
+      "page": 190,
+      "name": "The False Sip"
+    },
+    {
+      "discipline": "Protean",
+      "level": 2,
+      "page": 190,
+      "name": "Vicissitude"
+    },
+    {
+      "discipline": "Protean",
+      "level": 2,
+      "page": 192,
+      "name": "- Vicissitude Compulsion: Uncontrollable Flesh Change"
+    },
+    {
+      "discipline": "Protean",
+      "level": 3,
+      "page": 192,
+      "name": "Earth Meld"
+    },
+    {
+      "discipline": "Protean",
+      "level": 3,
+      "page": 192,
+      "name": "Fleshcrafting"
+    },
+    {
+      "discipline": "Protean",
+      "level": 3,
+      "page": 193,
+      "name": "Shapechange"
+    },
+    {
+      "discipline": "Protean",
+      "level": 3,
+      "page": 193,
+      "name": "Visceral Absorption"
+    },
+    {
+      "discipline": "Protean",
+      "level": 4,
+      "page": 194,
+      "name": "Horrid Form"
+    },
+    {
+      "discipline": "Protean",
+      "level": 4,
+      "page": 195,
+      "name": "Metamorphosis"
+    }
+  ]
+}
