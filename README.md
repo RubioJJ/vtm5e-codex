@@ -32,3 +32,14 @@ O PDF fornecido foi usado como referência para nomes, níveis e páginas. Para 
 Os itens usam o custo de ativação identificado no catálogo; custos variáveis e situações especiais devem ser conferidos no texto de referência. A automação de efeitos específicos (dano, condições, modificadores e custos de Fome) não é aplicada automaticamente nesta versão.
 
 Projeto comunitário não oficial. Vampire: The Masquerade e World of Darkness são marcas de seus respectivos titulares.
+
+
+## Importador e template externo (v0.4.0)
+
+O módulo inclui um importador de JSON acessível pelo botão **Importar conteúdo** na aba Compêndios. O importador valida os campos e cria/atualiza itens `power` no compêndio do mundo `VTM5e Codex — Disciplinas`. Ao final, baixa um JSON de backup.
+
+Template editável fora do Foundry: `templates/power-template.json`. Guia: `docs/IMPORT_TEMPLATE.md`.
+
+**Fluxo recomendado:** copie o template, edite no VS Code, valide o JSON, importe no Foundry como GM e revise os itens. O JSON de backup pode ser adicionado manualmente a `data/powers.json` no GitHub para versionar o conteúdo.
+
+A leitura direta de PDF é experimental e depende de PDF.js disponível no navegador do Foundry; PDFs com layout complexo precisam de revisão. O fluxo JSON é o caminho confiável. A importação não cria macros automáticas: os campos de macro no template são metadados para uma etapa posterior, evitando inventar rolagens ou custos quando a fonte não for inequívoca.
