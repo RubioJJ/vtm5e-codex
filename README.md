@@ -26,10 +26,16 @@ Ative o módulo em um mundo com **World of Darkness 5e**.
 
 A criação é incremental: executar novamente adiciona apenas registros ausentes.
 
-## Limites desta versão
-O PDF fornecido foi usado como referência para nomes, níveis e páginas. Para respeitar direitos autorais, o módulo não redistribui descrições extensas nem o texto integral das regras. As entradas indicam a página; custo, requisitos, parada de dados, efeitos e duração ainda precisam ser conferidos no livro. As macros usam a API de rolagem do sistema, calculam a parada a partir da ficha e aplicam o custo em testes de Despertar. Testes resistidos ainda exigem a resolução separada da parada do alvo.
+## Importador e template externo (v0.4.0)
+- Botão **Importar conteúdo** na aba Compêndios.
+- Importa JSON validado e cria/atualiza itens nativos `power` no compêndio do mundo **VTM5e Codex — Disciplinas**.
+- Baixa um JSON de backup ao concluir.
+- Template editável: `templates/power-template.json`.
+- Guia: `docs/IMPORT_TEMPLATE.md`.
 
-Os itens usam o custo de ativação identificado no catálogo; custos variáveis e situações especiais devem ser conferidos no texto de referência. A automação de efeitos específicos (dano, condições, modificadores e custos de Fome) não é aplicada automaticamente nesta versão.
+**Fluxo recomendado:** copie o template, edite no VS Code, valide o JSON, importe no Foundry como GM e revise os itens. O JSON de backup pode ser adicionado manualmente a `data/powers.json` no GitHub para versionar o conteúdo.
+
+A leitura direta de PDF é experimental e depende de PDF.js disponível globalmente no navegador do Foundry. O reconhecimento de títulos/campos varia conforme a diagramação; revise tudo antes de confiar nos resultados. O fluxo JSON é o caminho confiável. O importador não cria macros automáticas nesta etapa: custos e paradas devem ser conferidos antes de automatizar rolagens.
 
 Projeto comunitário não oficial. Vampire: The Masquerade e World of Darkness são marcas de seus respectivos titulares.
 
