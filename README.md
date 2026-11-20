@@ -22,18 +22,6 @@ No Foundry, abra **Add-on Modules → Install Module**, cole esta URL no campo *
 ```
 https://github.com/RubioJJ/vtm5e-codex/releases/latest/download/module.json
 ```
-
-## Desenvolvimento
-
-O código-fonte fica neste repositório e pode ser editado pelo VS Code Web usando o botão **.** na página do GitHub ou abrindo `https://github.dev/RubioJJ/vtm5e-codex`.
-
-## Publicar uma versão
-
-1. Atualize a versão em `module.json` quando necessário.
-2. Crie e envie uma tag no formato `vX.Y.Z`, por exemplo `v0.1.0`.
-3. A GitHub Action em `.github/workflows/release.yml` gera o pacote ZIP e publica `module.json` e `module.zip` na Release.
-4. O Manifest estável aponta para a Release mais recente.
-
 ## Estrutura
 
 ```text
