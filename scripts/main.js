@@ -1,4 +1,5 @@
 import { openCodex, installCodexContent } from "./codex.js";
+import { openImporter } from "./importer.js";
 
 function getRoot(html) {
   if (html instanceof HTMLElement) return html;
@@ -20,13 +21,20 @@ function addCodexButton(_app, html) {
     openCodex();
   });
 
+
+  const importButton = document.createElement("button");
+  importButton.type = "button";
+  importButton.className = "vtm5e-codex-import";
+  importButton.innerHTML = '<i class="fas fa-file-import"></i> Importar conteúdo';
+  importButton.addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); openImporter(); });
+
   const header = root.querySelector(".directory-header");
   const actions = header?.querySelector(".header-actions");
-  if (actions) actions.append(button);
-  else if (header) header.append(button);
+  if (actions) actions.append(button, importButton);
+  else if (header) header.append(button, importButton);
   else {
     const content = root.querySelector(".window-content") || root;
-    content.prepend(button);
+    content.prepend(importButton, button);
   }
 }
 
@@ -40,6 +48,6 @@ Hooks.once("init", () => {
 
 Hooks.once("ready", () => {
   const module = game.modules.get("vtm5e-codex");
-  if (module) module.api = { openCodex, installCodexContent };
+  if (module) module.api = { openCodex, installCodexContent, openImporter };
   console.info("VTM5e Codex | Pronto. Abra a aba Compêndios.");
 });
