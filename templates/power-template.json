@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "sourceTitle": "All the Disciplines for Vampire V5",
+  "sourceEdition": "",
+  "sourceFile": "",
+  "powers": [
+    {
+      "name": "Power Name",
+      "discipline": "Animalism",
+      "level": 1,
+      "page": 0,
+      "source": "Book title / page",
+      "description": "Paste or write the complete original English description here.",
+      "cost": "Copy the Cost field exactly as written in your source.",
+      "dicePools": "Copy the Dice Pools field exactly as written in your source.",
+      "system": "Copy the System field exactly as written in your source.",
+      "duration": "Copy the Duration field exactly as written in your source.",
+      "prerequisites": "",
+      "amalgam": "",
+      "macro": {
+        "enabled": false,
+        "mode": "manual",
+        "normalPool": "",
+        "hungerPool": "",
+        "costType": "manual",
+        "notes": "Only enable automatic macros after verifying the dice pool and cost against the source."
+      }
+    }
+  ]
+}
