@@ -40,18 +40,33 @@ async function readJson(file) {
   if(!Array.isArray(list)) throw new Error("JSON inválido: esperado um array 'powers'.");
   return list.map(normalizePower);
 }
-async function readPdf(file) {
-  const pdfjs=globalThis.pdfjsLib || globalThis.pdfjs;
-  if(!pdfjs?.getDocument) throw new Error("PDF.js não está disponível nesta instalação do Foundry. Use o template JSON para importar, ou converta o PDF em texto/JSON fora do Foundry.");
-  const buffer=await file.arrayBuffer();
-  const pdf=await pdfjs.getDocument({data:buffer}).promise;
-  const textPages=[];
-  for(let n=1;n<=pdf.numPages;n++){
-    const page=await pdf.getPage(n);
-    const content=await page.getTextContent();
-    textPages.push(content.items.map(item=>item.str).join(" "));
+async function loadPdfJs() {
+  const existing = globalThis.pdfjsLib || globalThis.pdfjs;
+  if (existing?.getDocument) return existing;
+  // Foundry V13 não expõe PDF.js como global em todas as instalações.
+  // Carrega uma versão fixa do PDF.js quando a importação de PDF é solicitada.
+  try {
+    const pdfjs = await import("https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs");
+    pdfjs.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs";
+    return pdfjs;
+  } catch (error) {
+    console.error("VTM5e Codex | Não foi possível carregar PDF.js.", error);
+    throw new Error("Não foi possível carregar o leitor de PDF. Verifique a conexão com a internet e se o navegador permite acessar cdn.jsdelivr.net. Como alternativa, importe o arquivo JSON.");
   }
-  return parsePdfText(textPages.join("\n"));
+}
+async function readPdf(file) {
+  const pdfjs = await loadPdfJs();
+  const buffer = await file.arrayBuffer();
+  const pdf = await pdfjs.getDocument({ data: buffer }).promise;
+  const textPages = [];
+  for (let n = 1; n <= pdf.numPages; n++) {
+    const page = await pdf.getPage(n);
+    const content = await page.getTextContent();
+    textPages.push(content.items.map(item => item.str).join(" "));
+  }
+  const entries = parsePdfText(textPages.join("\\n"));
+  if (!entries.length) throw new Error("O PDF foi aberto, mas nenhum poder foi reconhecido automaticamente. Use o template JSON e revise os campos manualmente.");
+  return entries;
 }
 function parsePdfText(text) {
   const entries=[];
