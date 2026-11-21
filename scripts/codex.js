@@ -26,7 +26,7 @@ function shell(data,active){
  <nav class="vc-tabs">${sections.map(x=>`<button type="button" class="${x.id===s.id?"active":""}" data-tab="${x.id}">${esc(x.label)}</button>`).join("")}</nav>
  <main class="vc-main"><section class="vc-panel"><div class="vc-panel-heading"><div><small>BIBLIOTECA • ${esc(s.label.toUpperCase())}</small><h2>${esc(s.label)}</h2><p>Pesquise, revise e organize o conteúdo da sua crônica.</p></div><label class="vc-import-button">＋ Importar JSON<input type="file" accept=".json,application/json" data-import-section="${s.id}" hidden></label></div>
  <div class="vc-toolbar"><input type="search" placeholder="Buscar por nome..." data-search>${s.id==="disciplines"?`<select data-filter-discipline><option value="">Todas as Disciplinas</option>${[...new Set(entries.map(e=>e.discipline).filter(Boolean))].sort((a,b)=>a.localeCompare(b)).map(d=>`<option value="${esc(d)}">${esc(d)}</option>`).join("")}</select>`:""}<select data-filter-level><option value="">Todos os níveis</option>${[1,2,3,4,5].map(n=>`<option value="${n}">Nível ${n}</option>`).join("")}</select><span>${entries.length} registros</span></div>
- <div class="vc-entry-list">${entries.length?entries.map(e=>`<article class="vc-entry" data-name="${esc(e.name).toLowerCase()}" data-level="${e.level||""}" data-discipline="${esc(e.discipline||"")}"><div class="vc-entry-icon">◆</div><div class="vc-entry-copy"><strong>${esc(e.name||"Sem nome")}</strong><span>${esc(e.discipline||e.category||s.label)} ${e.level?"• Nível "+e.level:""} ${e.page?"• p. "+e.page:""}</span><small>${e.description?esc(e.description).slice(0,150):"Descrição ainda não preenchida"}</small></div><button type="button" class="vc-edit" data-edit="${esc(e.id||e.name)}">Ver</button></article>`).join(""):`<div class="vc-empty"><div class="vc-empty-glyph">✧</div><h3>Esta seção ainda está vazia</h3><p>Importe o JSON correspondente para adicionar conteúdo à sua biblioteca.</p><label class="vc-import-button secondary">Selecionar arquivo<input type="file" accept=".json,application/json" data-import-section="${s.id}" hidden></label></div>`}</div>
+ <div class="vc-entry-list">${entries.length?entries.map(e=>`<article class="vc-entry" data-name="${esc(e.name).toLowerCase()}" data-level="${e.level||""}" data-discipline="${esc(e.discipline||"")}"><div class="vc-entry-icon">◆</div><div class="vc-entry-copy"><strong>${esc(e.name||"Sem nome")}</strong><span>${esc(e.discipline||e.category||s.label)} ${e.level?"• Nível "+e.level:""} ${e.page?"• p. "+e.page:""}</span><small>${e.description?esc(e.description).slice(0,150):"Descrição ainda não preenchida"}</small></div><div class="vc-entry-actions"><button type="button" class="vc-edit" data-edit="${esc(e.id||e.name)}">Ver</button><button type="button" class="vc-sheet-add" data-add-sheet="${esc(e.id||e.name)}">Adicionar à ficha</button></div></article>`).join(""):`<div class="vc-empty"><div class="vc-empty-glyph">✧</div><h3>Esta seção ainda está vazia</h3><p>Importe o JSON correspondente para adicionar conteúdo à sua biblioteca.</p><label class="vc-import-button secondary">Selecionar arquivo<input type="file" accept=".json,application/json" data-import-section="${s.id}" hidden></label></div>`}</div>
  <footer class="vc-panel-footer"><span>VTM5e Codex • Conteúdo local do mundo</span><button type="button" data-action="export">Exportar biblioteca JSON</button></footer></section></main><footer class="vc-bottom"><span>VAMPIRE</span><small>WORLD OF DARKNESS • V5</small></footer></div>`;
 }
 function closeCurrent(){if(codexApp){const old=codexApp;codexApp=null;old.close();}}
@@ -59,6 +59,32 @@ function bind(html,active){
  search?.addEventListener("input",filter);level?.addEventListener("change",filter);discipline?.addEventListener("change",filter);
  root.querySelector("[data-action=export]")?.addEventListener("click",()=>{const blob=new Blob([JSON.stringify(library(),null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="vtm5e-codex-library.json";a.click();URL.revokeObjectURL(url);});
  root.querySelector("[data-action=close]")?.addEventListener("click",()=>closeCurrent());
+
+ root.querySelectorAll("[data-add-sheet]").forEach(b=>b.addEventListener("click",async()=>{
+  const entry=library().entries.find(x=>(x.id||x.name)===b.dataset.addSheet);
+  if(!entry)return;
+  const actor=canvas.tokens.controlled[0]?.actor;
+  if(!actor){ui.notifications.warn("Selecione um token para adicionar o poder à ficha.");return;}
+  if(game.system.id!=="wod5e"){ui.notifications.error("A importação para ficha requer o sistema World of Darkness 5e.");return;}
+  const disciplineKey=({Animalism:"animalism",Auspex:"auspex","Blood Sorcery":"sorcery",Celerity:"celerity",Dominate:"dominate",Fortitude:"fortitude",Obfuscate:"obfuscate",Oblivion:"oblivion",Potence:"potence",Presence:"presence",Protean:"protean"})[entry.discipline]||entry.discipline?.toLowerCase().replace(/\\s+/g,"");
+  const section=(label,value)=>value?'<h3>'+esc(label)+'</h3><p>'+esc(value).replace(/\\n/g,"<br>")+'</p>':"";
+  const description=[
+   section("Descrição",entry.description||entry.description_pt),
+   section("Custo",entry.cost||entry.cost_pt),
+   section("Parada de Dados",entry.dicePools||entry.dice_pools_pt),
+   section("Regras / Sistema",entry.system||entry.system_pt),
+   section("Duração",entry.duration||entry.duration_pt),
+   section("Pré-requisitos",entry.prerequisites||entry.prerequisites_pt),
+   section("Amálgama",entry.amalgam||entry.amalgam_pt)
+  ].join("");
+  const source={name:entry.name,type:"power",img:"icons/magic/perception/eye-ringed-glow-angry-large-red.webp",system:{level:Number(entry.level||0),cost:0,discipline:disciplineKey,selected:false,dicepool:{},description,macroid:""},flags:{[MODULE_ID]:{imported:true,entryId:entry.id,discipline:entry.discipline,source:entry.source||"",macro:entry.macro||{}}}};
+  try{
+   const existing=actor.items.find(i=>i.type==="power"&&i.name===entry.name);
+   if(existing){await existing.update(source);ui.notifications.info(entry.name+" atualizado na ficha de "+actor.name+".");}
+   else{await actor.createEmbeddedDocuments("Item",[source]);ui.notifications.info(entry.name+" adicionado à ficha de "+actor.name+".");}
+  }catch(error){console.error("VTM5e Codex | Falha ao adicionar poder à ficha",error);ui.notifications.error("Não foi possível adicionar à ficha: "+error.message);}
+ }));
+
  root.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>{const e=library().entries.find(x=>(x.id||x.name)===b.dataset.edit);if(!e)return;new Dialog({title:e.name,content:`<div class="vc-detail"><p><b>Tipo:</b> ${esc(e.type)}</p><p><b>Descrição:</b> ${esc(e.description||"Não preenchida")}</p><p><b>Cost:</b> ${esc(e.cost||"—")}</p><p><b>Dice Pools:</b> ${esc(e.dicePools||"—")}</p><p><b>System:</b> ${esc(e.system||"—")}</p><p><b>Duration:</b> ${esc(e.duration||"—")}</p></div>`,buttons:{close:{label:"Fechar"}}}).render(true);}));
 }
 
