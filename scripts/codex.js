@@ -30,7 +30,7 @@ function shell(data,active){
  <nav class="vc-tabs">${sections.map(x=>`<button type="button" class="${x.id===s.id?"active":""}" data-tab="${x.id}">${esc(x.label)}</button>`).join("")}</nav>
  <main class="vc-main"><section class="vc-panel"><div class="vc-panel-heading"><div><small>BIBLIOTECA • ${esc(s.label.toUpperCase())}</small><h2>${esc(s.label)}</h2><p>Pesquise, revise e organize o conteúdo da sua crônica.</p></div><label class="vc-import-button">＋ Importar JSON<input type="file" accept=".json,application/json" data-import-section="${s.id}" hidden></label></div>
  <div class="vc-toolbar"><input type="search" placeholder="Buscar por nome..." data-search>${s.id==="disciplines"?`<select data-filter-discipline><option value="">Todas as Disciplinas</option>${[...new Set(entries.map(e=>e.discipline).filter(Boolean))].sort((a,b)=>a.localeCompare(b)).map(d=>`<option value="${esc(d)}">${esc(d)}</option>`).join("")}</select>`:""}<select data-filter-level><option value="">Todos os níveis</option>${[1,2,3,4,5].map(n=>`<option value="${n}">Nível ${n}</option>`).join("")}</select><span>${entries.length} registros</span></div>
- <div class="vc-entry-list">${entries.length?entries.map(e=>`<article class="vc-entry" data-name="${esc(e.name).toLowerCase()}" data-level="${e.level||""}" data-discipline="${esc(e.discipline||"")}"><div class="vc-entry-icon"><img src="${symbolPath(e)}" alt="${esc(e.discipline||e.category||s.label)}" loading="lazy"></div><div class="vc-entry-copy"><strong>${esc(e.name||"Sem nome")}</strong><span>${esc(e.discipline||e.category||s.label)} ${e.level?"• Nível "+e.level:""} ${e.page?"• p. "+e.page:""}</span><small>${e.description?esc(e.description).slice(0,150):"Descrição ainda não preenchida"}</small></div><div class="vc-entry-actions"><button type="button" class="vc-edit" data-edit="${esc(e.id||e.name)}">Ver</button><button type="button" class="vc-sheet-add" data-add-sheet="${esc(e.id||e.name)}">Adicionar à ficha</button></div></article>`).join(""):`<div class="vc-empty"><div class="vc-empty-glyph">✧</div><h3>Esta seção ainda está vazia</h3><p>Importe o JSON correspondente para adicionar conteúdo à sua biblioteca.</p><label class="vc-import-button secondary">Selecionar arquivo<input type="file" accept=".json,application/json" data-import-section="${s.id}" hidden></label></div>`}</div>
+ <div class="vc-entry-list">${entries.length?entries.map(e=>`<article class="vc-entry" data-name="${esc(e.name).toLowerCase()}" data-level="${e.level||""}" data-discipline="${esc(e.discipline||"")}"><div class="vc-entry-icon"><img src="${symbolPath(e)}" alt="${esc(e.discipline||e.category||s.label)}" loading="lazy"></div><div class="vc-entry-copy"><strong>${esc(e.name||"Sem nome")}</strong><span>${esc(e.discipline||e.category||s.label)} ${e.level?"• Nível "+e.level:""} ${e.page?"• p. "+e.page:""}</span><small>${e.description?esc(e.description).slice(0,150):"Descrição ainda não preenchida"}</small></div><div class="vc-entry-actions"><button type="button" class="vc-edit" data-edit="${esc(e.id||e.name)}">Ver</button>${game.user.isGM?`<button type="button" class="vc-edit-record" data-edit-record="${esc(e.id||e.name)}"><i class="fas fa-pen"></i> Editar</button>`:""}<button type="button" class="vc-sheet-add" data-add-sheet="${esc(e.id||e.name)}">Adicionar à ficha</button></div></article>`).join(""):`<div class="vc-empty"><div class="vc-empty-glyph">✧</div><h3>Esta seção ainda está vazia</h3><p>Importe o JSON correspondente para adicionar conteúdo à sua biblioteca.</p><label class="vc-import-button secondary">Selecionar arquivo<input type="file" accept=".json,application/json" data-import-section="${s.id}" hidden></label></div>`}</div>
  <footer class="vc-panel-footer"><span>VTM5e Codex • Conteúdo local do mundo</span><div class="vc-library-actions"><button type="button" data-action="import-master"><i class="fas fa-upload"></i> Importar JSON</button><button type="button" data-action="export"><i class="fas fa-download"></i> Exportar JSON</button></div></footer></section></main><footer class="vc-bottom"><span>VAMPIRE</span><small>WORLD OF DARKNESS • V5</small></footer></div>`;
 }
 
@@ -115,6 +115,49 @@ function render(active="disciplines"){
  codexApp=new Dialog({title:"VTM5e Codex",content,buttons:{close:{label:"Fechar"}},default:"close",render:html=>bind(html,active),close:()=>{codexApp=null;}},{width:Math.max(720,Math.min(1440,Math.floor(viewportWidth*.96))),height:Math.max(480,Math.min(900,Math.floor(viewportHeight*.88))),resizable:true,classes:["wod5e","vtm5e-codex-window","vtm5e-codex-v2"]});
  codexApp.render(true);
 }
+
+function editEntry(entry,active){
+ if(!game.user.isGM){ui.notifications.warn("Somente o Mestre pode editar a biblioteca.");return;}
+ const fields=[
+  ["Nome","name",entry.name||"", "text"],
+  ["Disciplina / categoria","discipline",entry.discipline||entry.category||"", "text"],
+  ["Nível","level",entry.level??"", "number"],
+  ["Página","page",entry.page??"", "text"],
+  ["Descrição","description",entryField(entry,"description"), "textarea"],
+  ["Custo","cost",entryField(entry,"cost"), "textarea"],
+  ["Parada de dados","dicePools",entryField(entry,"dicePools"), "textarea"],
+  ["Sistema / regras","system",entryField(entry,"system"), "textarea"],
+  ["Duração","duration",entryField(entry,"duration"), "textarea"],
+  ["Pré-requisitos","prerequisites",entryField(entry,"prerequisites"), "textarea"],
+  ["Amálgama","amalgam",entryField(entry,"amalgam"), "textarea"]
+ ];
+ const control=([label,key,value,type])=>`<label class="vc-editor-field"><span>${esc(label)}</span>${type==="textarea"?`<textarea name="${key}" rows="3">${esc(value)}</textarea>`:`<input name="${key}" type="${type}" value="${esc(value)}">`}</label>`;
+ const macroValue=entry.macro?JSON.stringify(entry.macro,null,2):"";
+ const content=`<form class="vc-entry-editor"><p class="vc-editor-help">Edite os dados deste registro. As alterações serão salvas na biblioteca deste mundo e continuarão disponíveis após fechar o Foundry.</p><div class="vc-editor-grid">${fields.map(control).join("")}<label class="vc-editor-field vc-editor-wide"><span>Macro (JSON)</span><textarea name="macro" rows="5" spellcheck="false">${esc(macroValue)}</textarea><small>Deixe vazio se este registro não utilizar macro. O conteúdo deve ser um JSON válido.</small></label></div></form>`;
+ const dlg=new Dialog({title:"Editar registro • "+entry.name,content,buttons:{
+  save:{label:"Salvar alterações",icon:'<i class="fas fa-save"></i>',callback:async html=>{
+   try{
+    const form=html[0].querySelector(".vc-entry-editor");
+    const value=key=>form.elements.namedItem(key)?.value??"";
+    const name=String(value("name")).trim();
+    if(!name)throw new Error("O nome do registro não pode ficar vazio.");
+    const macroText=String(value("macro")).trim();
+    const macro=macroText?JSON.parse(macroText):{};
+    const data=library();
+    const index=data.entries.findIndex(x=>(x.type||"power")===(entry.type||"power")&&String(x.id||x.name)===String(entry.id||entry.name));
+    if(index<0)throw new Error("Este registro não foi encontrado na biblioteca. Atualize o Codex e tente novamente.");
+    const updated={...data.entries[index],name,discipline:String(value("discipline")).trim(),level:value("level")===""?"":Number(value("level")),page:String(value("page")).trim(),description:value("description"),cost:value("cost"),dicePools:value("dicePools"),system:value("system"),duration:value("duration"),prerequisites:value("prerequisites"),amalgam:value("amalgam"),macro};
+    await game.settings.set(MODULE_ID,SETTING_KEY,{...data,entries:data.entries.map((x,i)=>i===index?updated:x)});
+    ui.notifications.info(name+" atualizado no Codex.");
+    dlg.close();
+    render(active);
+   }catch(error){console.error("VTM5e Codex | Erro ao editar registro",error);ui.notifications.error("Não foi possível salvar: "+error.message);}
+  }},
+  cancel:{label:"Cancelar"}
+ },default:"save",render:html=>{html.find(".vc-entry-editor").on("submit",ev=>ev.preventDefault());}},{width:760,height:760,resizable:true,classes:["vtm5e-codex-editor"]});
+ dlg.render(true);
+}
+
 function bind(html,active){
  const root=html[0]||html;
  root.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>render(b.dataset.tab)));
@@ -163,6 +206,12 @@ function bind(html,active){
    if(existing){await existing.update(source);ui.notifications.info(entry.name+" atualizado na ficha de "+actor.name+".");}
    else{await actor.createEmbeddedDocuments("Item",[source]);ui.notifications.info(entry.name+" adicionado à ficha de "+actor.name+".");}
   }catch(error){console.error("VTM5e Codex | Falha ao adicionar poder à ficha",error);ui.notifications.error("Não foi possível adicionar à ficha: "+error.message);}
+ }));
+
+
+ root.querySelectorAll("[data-edit-record]").forEach(button=>button.addEventListener("click",()=>{
+  const entry=library().entries.find(x=>String(x.id||x.name)===button.dataset.editRecord);
+  if(entry)editEntry(entry,active);
  }));
 
  root.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>{
