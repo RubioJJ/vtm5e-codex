@@ -37,3 +37,31 @@
 .vtm5e-codex-v2 .vc-entry-list::-webkit-scrollbar-track{background:#211c24}
 .vtm5e-codex-v2 .vc-entry-list::-webkit-scrollbar-thumb{background:#b45c76;border:2px solid #211c24;border-radius:8px}
 @media(max-height:760px){.vtm5e-codex-v2 .vc-entry-list{height:300px!important;max-height:calc(100vh - 400px)!important}}
+
+/* v0.5.7 — polished entry actions and readable power detail window */
+.vtm5e-codex-v2 .vc-entry-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.vtm5e-codex-v2 .vc-entry-actions button{width:auto;min-width:64px;padding:7px 12px;border-radius:7px;font-size:11px;font-weight:700;transition:background .15s,border-color .15s,transform .15s}
+.vtm5e-codex-v2 .vc-edit{background:#302832;border:1px solid #805264;color:#f3b09c}
+.vtm5e-codex-v2 .vc-edit:hover{background:#49303c;border-color:#e39a89}
+.vtm5e-codex-v2 .vc-sheet-add{background:linear-gradient(135deg,#9d405b,#783349);border:1px solid #e6a08e;color:#fff}
+.vtm5e-codex-v2 .vc-sheet-add:hover{background:linear-gradient(135deg,#b6506c,#91405a);border-color:#ffd0b8}
+.vtm5e-codex-v2 .vc-entry-actions button:active{transform:translateY(1px)}
+.vtm5e-codex-detail .window-content{padding:0!important;background:#17171e;color:#f5ece8}
+.vtm5e-codex-detail .dialog-content{padding:0!important;overflow:auto}
+.vtm5e-codex-detail .dialog-buttons{padding:10px 14px;background:#211c24;border-top:1px solid #593947}
+.vtm5e-codex-detail .dialog-buttons button{background:#302832;border:1px solid #76505c;color:#f6e9e4;border-radius:7px;font-weight:700}
+.vc-detail-card{background:#191920;color:#f5ece8}
+.vc-detail-header{padding:22px 24px 18px;background:linear-gradient(125deg,#28202a,#482b39);border-bottom:1px solid #855065}
+.vc-detail-kicker{font-size:10px;letter-spacing:1.5px;font-weight:800;color:#f0a58e;text-transform:uppercase}
+.vc-detail-header h2{margin:7px 0 4px;border:0;color:#fff;font-size:25px;line-height:1.2}
+.vc-detail-header small{color:#cbb9c0;font-size:11px}
+.vc-detail-content{padding:8px 24px 16px}
+.vc-detail-section{padding:13px 0;border-bottom:1px solid #493541}
+.vc-detail-section h3{margin:0 0 7px;border:0;color:#eaa18d;font-size:11px;letter-spacing:1.1px;text-transform:uppercase}
+.vc-detail-section p{margin:0;color:#f0e8e6;font-size:13px;line-height:1.6;white-space:normal;overflow-wrap:anywhere}
+.vc-detail-section .vc-empty-value{color:#94858e;font-style:italic}
+.vc-detail-actions{display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:16px 24px 20px;background:#211c24;border-top:1px solid #493541}
+.vc-detail-actions .vc-add-to-sheet{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px 16px;border:1px solid #e6a08e;border-radius:8px;background:linear-gradient(135deg,#a34460,#79354d);color:#fff;font-weight:800;font-size:13px;box-shadow:0 3px 10px #0005}
+.vc-detail-actions .vc-add-to-sheet:hover{background:linear-gradient(135deg,#bd5872,#91415c);box-shadow:0 4px 14px #0007}
+.vc-detail-actions small{color:#b9aab1;text-align:center;font-size:10px}
+@media(max-width:560px){.vtm5e-codex-v2 .vc-entry{align-items:flex-start;flex-wrap:wrap}.vtm5e-codex-v2 .vc-entry-actions{width:100%;justify-content:flex-end}.vc-detail-header,.vc-detail-content,.vc-detail-actions{padding-left:16px;padding-right:16px}}
