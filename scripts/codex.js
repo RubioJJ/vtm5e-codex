@@ -15,7 +15,10 @@ let codexApp=null;
 const emptyLibrary=()=>({schemaVersion:2,entries:[]});
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function library(){return foundry.utils.deepClone(game.settings.get(MODULE_ID,SETTING_KEY)||emptyLibrary());}
-function canSee(s){return !s.gmOnly||game.user.isGM||game.settings.get(MODULE_ID,"playersSeeElderPowers");}
+function userAllowed(setting){const ids=game.settings.get(MODULE_ID,setting)||[];return game.user.isGM||ids.includes(game.user.id);}
+function canSee(s){if(game.user.isGM)return true;if(s.id==="elders")return userAllowed("elderAccessUsers");if(s.id==="methuselah")return userAllowed("methuselahAccessUsers");return true;}
+function canEditEntry(entry){if(game.user.isGM)return true;const type=entry?.type||"power";if(type==="elder")return userAllowed("elderAccessUsers");if(type==="methuselah")return userAllowed("methuselahAccessUsers");return userAllowed("editorUsers");}
+function canEditSection(sectionId){if(game.user.isGM)return true;if(sectionId==="elders")return userAllowed("elderAccessUsers");if(sectionId==="methuselah")return userAllowed("methuselahAccessUsers");return userAllowed("editorUsers");}
 function visibleSections(){return SECTIONS.filter(canSee);}
 function sectionEntries(data,s){return data.entries.filter(e=>s.types.includes(e.type));}
 
@@ -30,7 +33,7 @@ function shell(data,active){
  <nav class="vc-tabs">${sections.map(x=>`<button type="button" class="${x.id===s.id?"active":""}" data-tab="${x.id}">${esc(x.label)}</button>`).join("")}</nav>
  <main class="vc-main"><section class="vc-panel"><div class="vc-panel-heading"><div><small>BIBLIOTECA • ${esc(s.label.toUpperCase())}</small><h2>${esc(s.label)}</h2><p>Pesquise, revise e organize o conteúdo da sua crônica.</p></div><label class="vc-import-button">＋ Importar JSON<input type="file" accept=".json,application/json" data-import-section="${s.id}" hidden></label></div>
  <div class="vc-toolbar"><input type="search" placeholder="Buscar por nome..." data-search>${s.id==="disciplines"?`<select data-filter-discipline><option value="">Todas as Disciplinas</option>${[...new Set(entries.map(e=>e.discipline).filter(Boolean))].sort((a,b)=>a.localeCompare(b)).map(d=>`<option value="${esc(d)}">${esc(d)}</option>`).join("")}</select>`:""}<select data-filter-level><option value="">Todos os níveis</option>${[1,2,3,4,5].map(n=>`<option value="${n}">Nível ${n}</option>`).join("")}</select><span>${entries.length} registros</span></div>
- <div class="vc-entry-list">${entries.length?entries.map(e=>`<article class="vc-entry" data-name="${esc(e.name).toLowerCase()}" data-level="${e.level||""}" data-discipline="${esc(e.discipline||"")}"><div class="vc-entry-icon"><img src="${symbolPath(e)}" alt="${esc(e.discipline||e.category||s.label)}" loading="lazy"></div><div class="vc-entry-copy"><strong>${esc(e.name||"Sem nome")}</strong><span>${esc(e.discipline||e.category||s.label)} ${e.level?"• Nível "+e.level:""} ${e.page?"• p. "+e.page:""}</span><small>${e.description?esc(e.description).slice(0,150):"Descrição ainda não preenchida"}</small></div><div class="vc-entry-actions"><button type="button" class="vc-edit" data-edit="${esc(e.id||e.name)}">Ver</button>${game.user.isGM?`<button type="button" class="vc-edit-record" data-edit-record="${esc(e.id||e.name)}"><i class="fas fa-pen"></i> Editar</button>`:""}<button type="button" class="vc-sheet-add" data-add-sheet="${esc(e.id||e.name)}">Adicionar à ficha</button></div></article>`).join(""):`<div class="vc-empty"><div class="vc-empty-glyph">✧</div><h3>Esta seção ainda está vazia</h3><p>Importe o JSON correspondente para adicionar conteúdo à sua biblioteca.</p><label class="vc-import-button secondary">Selecionar arquivo<input type="file" accept=".json,application/json" data-import-section="${s.id}" hidden></label></div>`}</div>
+ <div class="vc-entry-list">${entries.length?entries.map(e=>`<article class="vc-entry" data-name="${esc(e.name).toLowerCase()}" data-level="${e.level||""}" data-discipline="${esc(e.discipline||"")}"><div class="vc-entry-icon"><img src="${symbolPath(e)}" alt="${esc(e.discipline||e.category||s.label)}" loading="lazy"></div><div class="vc-entry-copy"><strong>${esc(e.name||"Sem nome")}</strong><span>${esc(e.discipline||e.category||s.label)} ${e.level?"• Nível "+e.level:""} ${e.page?"• p. "+e.page:""}</span><small>${e.description?esc(e.description).slice(0,150):"Descrição ainda não preenchida"}</small></div><div class="vc-entry-actions"><button type="button" class="vc-edit" data-edit="${esc(e.id||e.name)}">Ver</button>${canEditEntry(e)?`<button type="button" class="vc-edit-record" data-edit-record="${esc(e.id||e.name)}"><i class="fas fa-pen"></i> Editar</button>`:""}<button type="button" class="vc-sheet-add" data-add-sheet="${esc(e.id||e.name)}">Adicionar à ficha</button></div></article>`).join(""):`<div class="vc-empty"><div class="vc-empty-glyph">✧</div><h3>Esta seção ainda está vazia</h3><p>Importe o JSON correspondente para adicionar conteúdo à sua biblioteca.</p><label class="vc-import-button secondary">Selecionar arquivo<input type="file" accept=".json,application/json" data-import-section="${s.id}" hidden></label></div>`}</div>
  <footer class="vc-panel-footer"><span>VTM5e Codex • Conteúdo local do mundo</span><div class="vc-library-actions"><button type="button" data-action="import-master"><i class="fas fa-upload"></i> Importar JSON</button><button type="button" data-action="export"><i class="fas fa-download"></i> Exportar JSON</button></div></footer></section></main><footer class="vc-bottom"><span>VAMPIRE</span><small>WORLD OF DARKNESS • V5</small></footer></div>`;
 }
 
@@ -117,7 +120,7 @@ function render(active="disciplines"){
 }
 
 function editEntry(entry,active){
- if(!game.user.isGM){ui.notifications.warn("Somente o Mestre pode editar a biblioteca.");return;}
+ if(!canEditEntry(entry)){ui.notifications.warn("Você não tem permissão para editar este registro.");return;}
  const fields=[
   ["Nome","name",entry.name||"", "text"],
   ["Disciplina / categoria","discipline",entry.discipline||entry.category||"", "text"],
@@ -144,6 +147,7 @@ function editEntry(entry,active){
     const macroText=String(value("macro")).trim();
     const macro=macroText?JSON.parse(macroText):{};
     const data=library();
+    if(!canEditEntry(entry))throw new Error("Sua permissão de edição foi alterada ou removida.");
     const index=data.entries.findIndex(x=>(x.type||"power")===(entry.type||"power")&&String(x.id||x.name)===String(entry.id||entry.name));
     if(index<0)throw new Error("Este registro não foi encontrado na biblioteca. Atualize o Codex e tente novamente.");
     const updated={...data.entries[index],name,discipline:String(value("discipline")).trim(),level:value("level")===""?"":Number(value("level")),page:String(value("page")).trim(),description:value("description"),cost:value("cost"),dicePools:value("dicePools"),system:value("system"),duration:value("duration"),prerequisites:value("prerequisites"),amalgam:value("amalgam"),macro};
@@ -241,27 +245,30 @@ function bind(html,active){
 }
 
 class CodexAdminSettings extends FormApplication {
- static get defaultOptions(){return foundry.utils.mergeObject(super.defaultOptions,{id:"vtm5e-codex-admin",title:"VTM5e Codex — Configurações do Mestre",template:null,width:520,height:"auto",closeOnSubmit:false});}
+ static get defaultOptions(){return foundry.utils.mergeObject(super.defaultOptions,{id:"vtm5e-codex-admin",title:"VTM5e Codex — Configurações do Mestre",template:null,width:680,height:"auto",closeOnSubmit:false,resizable:true});}
  async _renderInner(){
-  return $(`<form class="vtm5e-admin-settings"><p>Configurações administrativas da biblioteca. A remoção apaga todos os registros importados deste mundo.</p><hr><button type="button" class="vct-danger"><i class="fas fa-trash"></i> Remover todo o conteúdo do Codex</button><p class="notes">Esta ação não pode ser desfeita. Exporte uma cópia JSON antes de continuar.</p></form>`);
+  const users=game.users.filter(u=>!u.isGM);
+  const editorIds=game.settings.get(MODULE_ID,"editorUsers")||[];
+  const elderIds=game.settings.get(MODULE_ID,"elderAccessUsers")||[];
+  const methuselahIds=game.settings.get(MODULE_ID,"methuselahAccessUsers")||[];
+  const rows=(key,ids)=>users.length?users.map(u=>'<label class="vct-user"><input type="checkbox" name="'+key+'" value="'+esc(u.id)+'" '+(ids.includes(u.id)?"checked":"")+'><span>'+esc(u.name)+'</span><small>'+(u.active?"Online":"Offline")+'</small></label>').join(""):'<p class="notes">Não há jogadores neste mundo.</p>';
+  return $('<form class="vtm5e-admin-settings"><p>Escolha individualmente quais jogadores podem editar a biblioteca e acessar as áreas restritas. O Mestre sempre mantém acesso total.</p>'+
+   '<section class="vct-permission-group"><h3><i class="fas fa-pen"></i> Editar biblioteca geral</h3><p>Jogadores selecionados poderão editar disciplinas, rituais, cerimônias, clãs, vantagens, desvantagens, antecedentes e tipos de predador.</p><div class="vct-user-list">'+rows("editorUsers",editorIds)+'</div></section>'+
+   '<section class="vct-permission-group"><h3><i class="fas fa-crown"></i> Poderes de Anciões</h3><p>Jogadores selecionados poderão visualizar e editar a aba de poderes de Anciões.</p><div class="vct-user-list">'+rows("elderAccessUsers",elderIds)+'</div></section>'+
+   '<section class="vct-permission-group"><h3><i class="fas fa-skull"></i> Poderes de Matusalém</h3><p>Jogadores selecionados poderão visualizar e editar a aba de poderes de Matusalém.</p><div class="vct-user-list">'+rows("methuselahAccessUsers",methuselahIds)+'</div></section>'+
+   '<div class="vct-admin-actions"><button type="submit" class="vct-save-permissions"><i class="fas fa-save"></i> Salvar permissões</button><button type="button" class="vct-danger"><i class="fas fa-trash"></i> Remover todo o conteúdo</button></div><p class="notes">As permissões são salvas neste mundo. Alterações passam a valer ao reabrir o Codex.</p></form>');
  }
  activateListeners(html){
   super.activateListeners(html);
-  html.find(".vct-danger").on("click",async event=>{
-   event.preventDefault();
-   const confirmed=await Dialog.confirm({title:"Remover todo o conteúdo?",content:"<p>Isso apagará permanentemente todos os poderes, rituais, cerimônias e demais registros salvos neste mundo.</p><p><strong>Recomendamos exportar uma cópia antes.</strong></p>",yes:()=>true,no:()=>false,defaultYes:false});
-   if(!confirmed)return;
-   await game.settings.set(MODULE_ID,SETTING_KEY,emptyLibrary());
-   ui.notifications.info("Todo o conteúdo do VTM5e Codex foi removido.");
-   this.close();
-  });
+  html.find(".vtm5e-admin-settings").on("submit",async event=>{event.preventDefault();const form=event.currentTarget;const ids=name=>Array.from(form.querySelectorAll('input[name="'+name+'"]:checked')).map(input=>input.value);await game.settings.set(MODULE_ID,"editorUsers",ids("editorUsers"));await game.settings.set(MODULE_ID,"elderAccessUsers",ids("elderAccessUsers"));await game.settings.set(MODULE_ID,"methuselahAccessUsers",ids("methuselahAccessUsers"));ui.notifications.info("Permissões do VTM5e Codex salvas.");this.close();render();});
+  html.find(".vct-danger").on("click",async event=>{event.preventDefault();const confirmed=await Dialog.confirm({title:"Remover todo o conteúdo?",content:"<p>Isso apagará permanentemente todos os registros salvos neste mundo.</p><p><strong>Exporte uma cópia JSON antes de continuar.</strong></p>",yes:()=>true,no:()=>false,defaultYes:false});if(!confirmed)return;await game.settings.set(MODULE_ID,SETTING_KEY,emptyLibrary());ui.notifications.info("Todo o conteúdo do VTM5e Codex foi removido.");this.close();});
  }
 }
 
 export function registerCodexSettings(){
  if(!game.settings.settings.has(MODULE_ID+".libraryData"))game.settings.register(MODULE_ID,SETTING_KEY,{scope:"world",config:false,type:Object,default:emptyLibrary()});
- if(!game.settings.settings.has(MODULE_ID+".playersSeeElderPowers"))game.settings.register(MODULE_ID,"playersSeeElderPowers",{name:"Permitir que jogadores vejam poderes de Anciões e Matusalém",hint:"Quando ativado, as abas de poderes de Anciões e Matusalém ficam visíveis para todos os jogadores deste mundo.",scope:"world",config:true,type:Boolean,default:false});
- if(!game.settings.menus.has(MODULE_ID+".adminSettings"))game.settings.registerMenu(MODULE_ID,"adminSettings",{name:"Configurações administrativas do Codex",label:"Abrir configurações",hint:"Ferramentas exclusivas do Mestre para administrar a biblioteca.",icon:"fas fa-tools",type:CodexAdminSettings,restricted:true});
+ for(const key of ["editorUsers","elderAccessUsers","methuselahAccessUsers"]){if(!game.settings.settings.has(MODULE_ID+"."+key))game.settings.register(MODULE_ID,key,{scope:"world",config:false,type:Array,default:[]});}
+ if(!game.settings.menus.has(MODULE_ID+".adminSettings"))game.settings.registerMenu(MODULE_ID,"adminSettings",{name:"Configurações administrativas do Codex",label:"Abrir configurações",hint:"Escolha jogadores que podem editar a biblioteca e acessar poderes restritos de Anciões e Matusalém.",icon:"fas fa-users-cog",type:CodexAdminSettings,restricted:true});
 }
 export async function openCodex(){registerCodexSettings();render();}
 export async function installCodexContent(){ui.notifications.info("Use as abas do Codex para importar os arquivos JSON de cada categoria.");return {total:library().entries.length};}
