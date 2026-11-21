@@ -129,3 +129,13 @@
 .vct-admin-actions .vct-save-permissions{background:#963d5a;border-color:#e79a8c}
 .vct-admin-actions .vct-danger{margin-left:auto}
 @media(max-width:560px){.vct-user-list{grid-template-columns:1fr}.vct-admin-actions button{flex:1}.vct-admin-actions .vct-danger{margin-left:0}}
+
+/* v0.6.4 — dark admin window and relocated library clear action */
+#vtm5e-codex-admin .window-content,
+.window-app#vtm5e-codex-admin .window-content{background:#1b1b23!important;background-image:none!important;color:#f3e8e9!important;padding:12px}
+#vtm5e-codex-admin .window-content .notes,
+#vtm5e-codex-admin .window-content p{color:#cdbdc5}
+#vtm5e-codex-admin .window-content form{background:transparent!important;color:#f3e8e9!important}
+.vtm5e-admin-settings{background:#1b1b23!important;color:#f3e8e9!important;min-height:100%;box-sizing:border-box}
+.vtm5e-codex-v2 .vc-library-actions .vc-danger-library{background:#30232c;border:1px solid #895166;color:#efb5a8}
+.vtm5e-codex-v2 .vc-library-actions .vc-danger-library:hover{background:#552b3b;border-color:#e99a87;color:#fff}
