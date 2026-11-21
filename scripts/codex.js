@@ -38,26 +38,54 @@ function entryField(e,key){
 function dicepoolFromEntry(e){
  const raw=String(entryField(e,"dicePools")||"").trim();
  if(!raw||/^(none|nenhuma|não se aplica|n\/a)/i.test(raw))return {};
- const userPool=raw.split(/\s+(?:vs\.?|versus|contra)\s+/i)[0];
+ // The WOD5E system expects each pool component as a separate dicepool entry.
+ // Keep only the acting character's pool when the source also lists resistance.
+ const userPool=raw.split(/\s+(?:vs\.?|versus|contra)\s+/i)[0]
+  .replace(/\([^)]*\)/g,"").replace(/\[[^\]]*\]/g,"").trim();
+ const normalize=s=>String(s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[_-]+/g," ").replace(/\s+/g," ").trim();
  const aliases={
-  strength:"attributes.strength",dexterity:"attributes.dexterity",stamina:"attributes.stamina",
-  charisma:"attributes.charisma",manipulation:"attributes.manipulation",composure:"attributes.composure",
-  intelligence:"attributes.intelligence",wits:"attributes.wits",resolve:"attributes.resolve",
+  strength:"attributes.strength",forca:"attributes.strength",
+  dexterity:"attributes.dexterity",destreza:"attributes.dexterity",
+  stamina:"attributes.stamina",vigor:"attributes.stamina",
+  charisma:"attributes.charisma",carisma:"attributes.charisma",
+  manipulation:"attributes.manipulation",manipulacao:"attributes.manipulation",
+  composure:"attributes.composure",compostura:"attributes.composure",
+  intelligence:"attributes.intelligence",inteligencia:"attributes.intelligence",
+  wits:"attributes.wits",raciocinio:"attributes.wits",
+  resolve:"attributes.resolve",determinacao:"attributes.resolve",
   "animal ken":"skills.animalken",animalken:"skills.animalken",
   "empathy with animals":"skills.animalken","empatia com animais":"skills.animalken",
-  athletics:"skills.athletics",brawl:"skills.brawl",craft:"skills.craft",drive:"skills.drive",
-  firearms:"skills.firearms",melee:"skills.melee",larceny:"skills.larceny",stealth:"skills.stealth",
-  survival:"skills.survival",etiquette:"skills.etiquette",insight:"skills.insight",intimidation:"skills.intimidation",
-  leadership:"skills.leadership",performance:"skills.performance",persuasion:"skills.persuasion",
-  streetwise:"skills.streetwise",subterfuge:"skills.subterfuge",academics:"skills.academics",
-  awareness:"skills.awareness",finance:"skills.finance",investigation:"skills.investigation",
-  medicine:"skills.medicine",occult:"skills.occult",politics:"skills.politics",science:"skills.science",technology:"skills.technology"
+  athletics:"skills.athletics",atletismo:"skills.athletics",
+  brawl:"skills.brawl",briga:"skills.brawl",
+  craft:"skills.craft",oficios:"skills.craft",
+  drive:"skills.drive",conducao:"skills.drive",
+  firearms:"skills.firearms","armas de fogo":"skills.firearms",
+  melee:"skills.melee","armas brancas":"skills.melee",
+  larceny:"skills.larceny",crime:"skills.larceny",
+  stealth:"skills.stealth",furtividade:"skills.stealth",
+  survival:"skills.survival",sobrevivencia:"skills.survival",
+  etiquette:"skills.etiquette",etiqueta:"skills.etiquette",
+  insight:"skills.insight","perspicacia":"skills.insight",
+  intimidation:"skills.intimidation,intimidacao":"skills.intimidation",
+  leadership:"skills.leadership",lideranca:"skills.leadership",
+  performance:"skills.performance",performance:"skills.performance",
+  persuasion:"skills.persuasion",persuasao:"skills.persuasion",
+  streetwise:"skills.streetwise","manha":"skills.streetwise",
+  subterfuge:"skills.subterfuge",manha:"skills.subterfuge",
+  academics:"skills.academics",academicos:"skills.academics",
+  awareness:"skills.awareness",prontidao:"skills.awareness",
+  finance:"skills.finance",financas:"skills.finance",
+  investigation:"skills.investigation",investigacao:"skills.investigation",
+  medicine:"skills.medicine",medicina:"skills.medicine",
+  occult:"skills.occult","ocultismo":"skills.occult",
+  politics:"skills.politics",politica:"skills.politics",
+  science:"skills.science",ciencia:"skills.science",
+  technology:"skills.technology",tecnologia:"skills.technology"
  };
  const disciplineKeys={animalism:"animalism",auspex:"auspex","blood sorcery":"sorcery",celerity:"celerity",dominate:"dominate",fortitude:"fortitude",obfuscate:"obfuscate",oblivion:"oblivion",potence:"potence",presence:"presence",protean:"protean"};
  const paths=[];
- for(const part of userPool.split(/\s*\+\s*/).map(x=>x.trim()).filter(Boolean)){
-  const key=part.toLowerCase();
-  const path=aliases[key]||(disciplineKeys[key]?"disciplines."+disciplineKeys[key]:null);
+ for(const part of userPool.split(/\s*\+\s*/).map(x=>normalize(x)).filter(Boolean)){
+  const path=aliases[part]||(disciplineKeys[part]?"disciplines."+disciplineKeys[part]:null);
   if(path&&!paths.includes(path))paths.push(path);
  }
  return Object.fromEntries(paths.map((path,index)=>["dice"+(index+1),{path}]));
