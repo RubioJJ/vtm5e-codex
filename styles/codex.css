@@ -23,3 +23,5 @@
   background: #873b55;
   color: #ffffff;
 }
+
+.vtm5e-codex-v2 .window-content{min-height:0!important}.vtm5e-codex-v2 .vtm5e-shell{min-height:0;height:100%;overflow:hidden}.vtm5e-codex-v2 .vc-main{min-height:0;overflow:hidden;display:flex;flex-direction:column}.vtm5e-codex-v2 .vc-panel{min-height:0;height:100%;overflow:hidden;display:flex;flex-direction:column}.vtm5e-codex-v2 .vc-toolbar{flex:0 0 auto;flex-wrap:wrap}.vtm5e-codex-v2 .vc-entry-list{flex:1 1 auto;min-height:0;max-height:none;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#9b5368 #211c24;padding-right:8px}.vtm5e-codex-v2 .vc-entry-list::-webkit-scrollbar{width:10px}.vtm5e-codex-v2 .vc-entry-list::-webkit-scrollbar-track{background:#211c24;border-radius:8px}.vtm5e-codex-v2 .vc-entry-list::-webkit-scrollbar-thumb{background:#9b5368;border:2px solid #211c24;border-radius:8px}.vtm5e-codex-v2 .vc-toolbar select[data-filter-discipline]{width:210px}.vtm5e-codex-v2 .vc-panel-footer{flex:0 0 auto}
