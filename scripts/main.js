@@ -43,6 +43,7 @@ function addCodexButton(_app, html) {
 Hooks.on("renderCompendiumDirectory", addCodexButton);
 
 Hooks.once("init", () => {
+  game.settings.register("vtm5e-codex", "libraryData", { scope: "world", config: false, type: Object, default: { schemaVersion: 2, entries: [] } });
   console.info("VTM5e Codex | Inicializando para World of Darkness 5e.");
 });
 
