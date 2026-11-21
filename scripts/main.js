@@ -1,4 +1,4 @@
-import { openCodex, installCodexContent } from "./codex.js";
+import { openCodex, installCodexContent, registerCodexSettings } from "./codex.js";
 import { openImporter } from "./importer.js";
 
 function getRoot(html) {
@@ -39,7 +39,7 @@ function addCodexButton(_app, html) {
 Hooks.on("renderCompendiumDirectory", addCodexButton);
 
 Hooks.once("init", () => {
-  game.settings.register("vtm5e-codex", "libraryData", { scope: "world", config: false, type: Object, default: { schemaVersion: 2, entries: [] } });
+  registerCodexSettings();
   console.info("VTM5e Codex | Inicializando para World of Darkness 5e.");
 });
 
