@@ -29,6 +29,16 @@ function shell(data,active){
  <div class="vc-entry-list">${entries.length?entries.map(e=>`<article class="vc-entry" data-name="${esc(e.name).toLowerCase()}" data-level="${e.level||""}" data-discipline="${esc(e.discipline||"")}"><div class="vc-entry-icon">◆</div><div class="vc-entry-copy"><strong>${esc(e.name||"Sem nome")}</strong><span>${esc(e.discipline||e.category||s.label)} ${e.level?"• Nível "+e.level:""} ${e.page?"• p. "+e.page:""}</span><small>${e.description?esc(e.description).slice(0,150):"Descrição ainda não preenchida"}</small></div><div class="vc-entry-actions"><button type="button" class="vc-edit" data-edit="${esc(e.id||e.name)}">Ver</button><button type="button" class="vc-sheet-add" data-add-sheet="${esc(e.id||e.name)}">Adicionar à ficha</button></div></article>`).join(""):`<div class="vc-empty"><div class="vc-empty-glyph">✧</div><h3>Esta seção ainda está vazia</h3><p>Importe o JSON correspondente para adicionar conteúdo à sua biblioteca.</p><label class="vc-import-button secondary">Selecionar arquivo<input type="file" accept=".json,application/json" data-import-section="${s.id}" hidden></label></div>`}</div>
  <footer class="vc-panel-footer"><span>VTM5e Codex • Conteúdo local do mundo</span><button type="button" data-action="export">Exportar biblioteca JSON</button></footer></section></main><footer class="vc-bottom"><span>VAMPIRE</span><small>WORLD OF DARKNESS • V5</small></footer></div>`;
 }
+
+function entryToItemSource(e){
+ const blocks=[
+  ["Descrição",e.description],["Custo",e.cost],["Parada de Dados",e.dicePools],
+  ["Sistema",e.system],["Duração",e.duration],["Pré-requisitos",e.prerequisites],["Amálgama",e.amalgam]
+ ].filter(([,v])=>v).map(([label,value])=>`<h3>${esc(label)}</h3><p>${esc(value).replace(/\\n/g,"<br>")}</p>`).join("");
+ const disciplineKey=({Animalism:"animalism",Auspex:"auspex","Blood Sorcery":"sorcery",Celerity:"celerity",Dominate:"dominate",Fortitude:"fortitude",Obfuscate:"obfuscate",Oblivion:"oblivion",Potence:"potence",Presence:"presence",Protean:"protean"})[e.discipline]||String(e.discipline||"").toLowerCase();
+ return {name:e.name,type:"power",img:"icons/magic/perception/eye-ringed-glow-angry-large-red.webp",system:{level:Number(e.level)||1,cost:0,discipline:disciplineKey,selected:false,dicepool:{},description:blocks,macroid:""},flags:{[MODULE_ID]:{imported:true,sourceEntry:e}}};
+}
+
 function closeCurrent(){if(codexApp){const old=codexApp;codexApp=null;old.close();}}
 function render(active="disciplines"){
  const data=library(),content=shell(data,active);
@@ -85,7 +95,34 @@ function bind(html,active){
   }catch(error){console.error("VTM5e Codex | Falha ao adicionar poder à ficha",error);ui.notifications.error("Não foi possível adicionar à ficha: "+error.message);}
  }));
 
- root.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>{const e=library().entries.find(x=>(x.id||x.name)===b.dataset.edit);if(!e)return;new Dialog({title:e.name,content:`<div class="vc-detail"><p><b>Tipo:</b> ${esc(e.type)}</p><p><b>Descrição:</b> ${esc(e.description||"Não preenchida")}</p><p><b>Cost:</b> ${esc(e.cost||"—")}</p><p><b>Dice Pools:</b> ${esc(e.dicePools||"—")}</p><p><b>System:</b> ${esc(e.system||"—")}</p><p><b>Duration:</b> ${esc(e.duration||"—")}</p></div>`,buttons:{close:{label:"Fechar"}}}).render(true);}));
+ root.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>{
+  const e=library().entries.find(x=>(x.id||x.name)===b.dataset.edit);if(!e)return;
+  const detail=field=>esc(e[field]||"—").replace(/\\n/g,"<br>");
+  const content=`<div class="vc-detail">
+   <p><b>Descrição</b><br>${detail("description")}</p>
+   <p><b>Custo</b><br>${detail("cost")}</p>
+   <p><b>Parada de Dados</b><br>${detail("dicePools")}</p>
+   <p><b>Sistema</b><br>${detail("system")}</p>
+   <p><b>Duração</b><br>${detail("duration")}</p>
+   <p><b>Pré-requisitos</b><br>${detail("prerequisites")}</p>
+   <p><b>Amálgama</b><br>${detail("amalgam")}</p>
+   <button type="button" class="vc-add-to-sheet"><i class="fas fa-user-plus"></i> Adicionar à ficha selecionada</button>
+   <small>Selecione um token antes de adicionar o poder à ficha.</small>
+  </div>`;
+  const dlg=new Dialog({title:e.name,content,buttons:{close:{label:"Fechar"}},render:html=>{
+    html.find(".vc-add-to-sheet").on("click",async()=>{
+      try{
+       if(game.system.id!=="wod5e")throw new Error("A importação para ficha requer o sistema World of Darkness 5e.");
+       const actor=canvas.tokens.controlled[0]?.actor;
+       if(!actor)throw new Error("Selecione um token com uma ficha antes de adicionar o poder.");
+       const source=entryToItemSource(e);
+       await actor.createEmbeddedDocuments("Item",[source]);
+       ui.notifications.info(e.name+" foi adicionado à ficha de "+actor.name+".");
+       dlg.close();
+      }catch(err){console.error(err);ui.notifications.error(err.message);}
+    });
+  }});dlg.render(true);
+ }));
 }
 
 class CodexAdminSettings extends FormApplication {
