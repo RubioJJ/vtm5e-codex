@@ -37,14 +37,29 @@ function entryField(e,key){
 }
 function dicepoolFromEntry(e){
  const raw=String(entryField(e,"dicePools")||"").trim();
- if(!raw||/^(none|nenhuma|não se aplica|n\\/a)/i.test(raw))return {};
- const userPool=raw.split(/\\s+(?:vs\\.?|versus|contra)\\s+/i)[0];
- const aliases={strength:"attributes.strength",dexterity:"attributes.dexterity",stamina:"attributes.stamina",charisma:"attributes.charisma",manipulation:"attributes.manipulation",composure:"attributes.composure",intelligence:"attributes.intelligence",wits:"attributes.wits",resolve:"attributes.resolve",
- "animal ken":"skills.animalken",animalken:"skills.animalken","empathy with animals":"skills.animalken","empatia com animais":"skills.animalken",
- athletics:"skills.athletics",brawl:"skills.brawl",craft:"skills.craft",drive:"skills.drive",firearms:"skills.firearms",melee:"skills.melee",larceny:"skills.larceny",stealth:"skills.stealth",survival:"skills.survival",etiquette:"skills.etiquette",insight:"skills.insight",intimidation:"skills.intimidation",leadership:"skills.leadership",performance:"skills.performance",persuasion:"skills.persuasion",streetwise:"skills.streetwise",subterfuge:"skills.subterfuge",academics:"skills.academics",awareness:"skills.awareness",finance:"skills.finance",investigation:"skills.investigation",medicine:"skills.medicine",occult:"skills.occult",politics:"skills.politics",science:"skills.science",technology:"skills.technology"};
+ if(!raw||/^(none|nenhuma|não se aplica|n\/a)/i.test(raw))return {};
+ const userPool=raw.split(/\s+(?:vs\.?|versus|contra)\s+/i)[0];
+ const aliases={
+  strength:"attributes.strength",dexterity:"attributes.dexterity",stamina:"attributes.stamina",
+  charisma:"attributes.charisma",manipulation:"attributes.manipulation",composure:"attributes.composure",
+  intelligence:"attributes.intelligence",wits:"attributes.wits",resolve:"attributes.resolve",
+  "animal ken":"skills.animalken",animalken:"skills.animalken",
+  "empathy with animals":"skills.animalken","empatia com animais":"skills.animalken",
+  athletics:"skills.athletics",brawl:"skills.brawl",craft:"skills.craft",drive:"skills.drive",
+  firearms:"skills.firearms",melee:"skills.melee",larceny:"skills.larceny",stealth:"skills.stealth",
+  survival:"skills.survival",etiquette:"skills.etiquette",insight:"skills.insight",intimidation:"skills.intimidation",
+  leadership:"skills.leadership",performance:"skills.performance",persuasion:"skills.persuasion",
+  streetwise:"skills.streetwise",subterfuge:"skills.subterfuge",academics:"skills.academics",
+  awareness:"skills.awareness",finance:"skills.finance",investigation:"skills.investigation",
+  medicine:"skills.medicine",occult:"skills.occult",politics:"skills.politics",science:"skills.science",technology:"skills.technology"
+ };
  const disciplineKeys={animalism:"animalism",auspex:"auspex","blood sorcery":"sorcery",celerity:"celerity",dominate:"dominate",fortitude:"fortitude",obfuscate:"obfuscate",oblivion:"oblivion",potence:"potence",presence:"presence",protean:"protean"};
  const paths=[];
- for(const part of userPool.split(/\\s*\\+\\s*/).map(x=>x.trim()).filter(Boolean)){const key=part.toLowerCase();const path=aliases[key]||(disciplineKeys[key]?"disciplines."+disciplineKeys[key]:null);if(path&&!paths.includes(path))paths.push(path);}
+ for(const part of userPool.split(/\s*\+\s*/).map(x=>x.trim()).filter(Boolean)){
+  const key=part.toLowerCase();
+  const path=aliases[key]||(disciplineKeys[key]?"disciplines."+disciplineKeys[key]:null);
+  if(path&&!paths.includes(path))paths.push(path);
+ }
  return Object.fromEntries(paths.map((path,index)=>["dice"+(index+1),{path}]));
 }
 function entryToItemSource(e){
