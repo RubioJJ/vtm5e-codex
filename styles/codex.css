@@ -94,3 +94,21 @@
 @media(max-height:650px){.vtm5e-codex-window{height:92vh!important;max-height:92vh!important}.vtm5e-codex-window .window-content{max-height:calc(92vh - 30px)!important}.vtm5e-codex-v2 .vc-top{padding:8px 14px}.vtm5e-codex-v2 .vc-status{padding:6px 10px}.vtm5e-codex-v2 .vc-tabs{padding:7px 10px}}
 
 .vtm5e-codex-v2 .vc-entry-icon{width:42px;height:42px;flex:0 0 42px;padding:3px;display:grid;place-items:center;background:#382632;border:1px solid #684354;border-radius:9px;overflow:hidden}.vtm5e-codex-v2 .vc-entry-icon img{display:block;width:100%;height:100%;object-fit:contain}.vtm5e-codex-detail .vc-detail-header{position:relative;padding-left:104px;min-height:104px;display:flex;flex-direction:column;justify-content:center}.vtm5e-codex-detail .vc-detail-symbol{position:absolute;left:22px;top:50%;transform:translateY(-50%);width:66px;height:66px;object-fit:contain;border-radius:8px}@media(max-width:560px){.vtm5e-codex-detail .vc-detail-header{padding-left:82px}.vtm5e-codex-detail .vc-detail-symbol{left:14px;width:54px;height:54px}}
+
+/* v0.6.2 — inline Codex record editor */
+.vtm5e-codex-v2 .vc-entry-actions .vc-edit-record{display:inline-flex;align-items:center;gap:6px;padding:8px 11px;border:1px solid #986077;border-radius:7px;background:#342631;color:#f4c2ad;font-size:11px;font-weight:700;cursor:pointer}
+.vtm5e-codex-v2 .vc-entry-actions .vc-edit-record:hover{background:#563344;border-color:#f0a58e;color:#fff}
+.vtm5e-codex-editor .window-content{background:#1b1b23;color:#f4e9e7;overflow:auto}
+.vtm5e-codex-editor .dialog-buttons{background:#211c24;border-top:1px solid #593947;padding:10px}
+.vtm5e-codex-editor .dialog-buttons button{background:#302832;border:1px solid #76505c;color:#f6e9e4;border-radius:7px}
+.vtm5e-codex-editor .dialog-buttons button:first-child{background:#963d5a;border-color:#e79a8c}
+.vc-entry-editor{display:flex;flex-direction:column;gap:12px}
+.vc-editor-help{margin:0;color:#cdbdc5;font-size:12px;line-height:1.5}
+.vc-editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+.vc-editor-field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.vc-editor-field>span{color:#f0a58e;font-size:11px;font-weight:700;letter-spacing:.35px}
+.vc-editor-field input,.vc-editor-field textarea{box-sizing:border-box;width:100%;background:#111219;color:#f6eeee;border:1px solid #674653;border-radius:6px;padding:8px 9px;font:12px/1.45 inherit;resize:vertical}
+.vc-editor-field input:focus,.vc-editor-field textarea:focus{outline:1px solid #e99a87;border-color:#e99a87}
+.vc-editor-field small{font-size:10px;color:#b9a8b0}
+.vc-editor-wide{grid-column:1/-1}
+@media(max-width:620px){.vc-editor-grid{grid-template-columns:1fr}.vc-editor-wide{grid-column:auto}}
