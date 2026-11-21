@@ -53,7 +53,7 @@ function render(active="disciplines"){
  const data=library(),content=shell(data,active);
  if(codexApp){codexApp.data.content=content;codexApp.render(true);return;}
  const viewportWidth=window.innerWidth||1280,viewportHeight=window.innerHeight||900;
- codexApp=new Dialog({title:"VTM5e Codex",content,buttons:{close:{label:"Fechar"}},default:"close",render:html=>bind(html,active),close:()=>{codexApp=null;}},{width:Math.max(720,Math.min(1440,Math.floor(viewportWidth*.96))),height:Math.max(560,Math.min(1100,Math.floor(viewportHeight*.92))),resizable:true,classes:["wod5e","vtm5e-codex-window","vtm5e-codex-v2"]});
+ codexApp=new Dialog({title:"VTM5e Codex",content,buttons:{close:{label:"Fechar"}},default:"close",render:html=>bind(html,active),close:()=>{codexApp=null;}},{width:Math.max(720,Math.min(1440,Math.floor(viewportWidth*.96))),height:Math.max(480,Math.min(900,Math.floor(viewportHeight*.88))),resizable:true,classes:["wod5e","vtm5e-codex-window","vtm5e-codex-v2"]});
  codexApp.render(true);
 }
 function bind(html,active){
