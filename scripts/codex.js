@@ -61,9 +61,29 @@ function bind(html,active){
  root.querySelector("[data-action=close]")?.addEventListener("click",()=>closeCurrent());
  root.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>{const e=library().entries.find(x=>(x.id||x.name)===b.dataset.edit);if(!e)return;new Dialog({title:e.name,content:`<div class="vc-detail"><p><b>Tipo:</b> ${esc(e.type)}</p><p><b>Descrição:</b> ${esc(e.description||"Não preenchida")}</p><p><b>Cost:</b> ${esc(e.cost||"—")}</p><p><b>Dice Pools:</b> ${esc(e.dicePools||"—")}</p><p><b>System:</b> ${esc(e.system||"—")}</p><p><b>Duration:</b> ${esc(e.duration||"—")}</p></div>`,buttons:{close:{label:"Fechar"}}}).render(true);}));
 }
+
+class CodexAdminSettings extends FormApplication {
+ static get defaultOptions(){return foundry.utils.mergeObject(super.defaultOptions,{id:"vtm5e-codex-admin",title:"VTM5e Codex — Configurações do Mestre",template:null,width:520,height:"auto",closeOnSubmit:false});}
+ async _renderInner(){
+  return $(`<form class="vtm5e-admin-settings"><p>Configurações administrativas da biblioteca. A remoção apaga todos os registros importados deste mundo.</p><hr><button type="button" class="vct-danger"><i class="fas fa-trash"></i> Remover todo o conteúdo do Codex</button><p class="notes">Esta ação não pode ser desfeita. Exporte uma cópia JSON antes de continuar.</p></form>`);
+ }
+ activateListeners(html){
+  super.activateListeners(html);
+  html.find(".vct-danger").on("click",async event=>{
+   event.preventDefault();
+   const confirmed=await Dialog.confirm({title:"Remover todo o conteúdo?",content:"<p>Isso apagará permanentemente todos os poderes, rituais, cerimônias e demais registros salvos neste mundo.</p><p><strong>Recomendamos exportar uma cópia antes.</strong></p>",yes:()=>true,no:()=>false,defaultYes:false});
+   if(!confirmed)return;
+   await game.settings.set(MODULE_ID,SETTING_KEY,emptyLibrary());
+   ui.notifications.info("Todo o conteúdo do VTM5e Codex foi removido.");
+   this.close();
+  });
+ }
+}
+
 export function registerCodexSettings(){
  if(!game.settings.settings.has(MODULE_ID+".libraryData"))game.settings.register(MODULE_ID,SETTING_KEY,{scope:"world",config:false,type:Object,default:emptyLibrary()});
  if(!game.settings.settings.has(MODULE_ID+".playersSeeElderPowers"))game.settings.register(MODULE_ID,"playersSeeElderPowers",{name:"Permitir que jogadores vejam poderes de Anciões e Matusalém",hint:"Quando ativado, as abas de poderes de Anciões e Matusalém ficam visíveis para todos os jogadores deste mundo.",scope:"world",config:true,type:Boolean,default:false});
+ if(!game.settings.menus.has(MODULE_ID+".adminSettings"))game.settings.registerMenu(MODULE_ID,"adminSettings",{name:"Configurações administrativas do Codex",label:"Abrir configurações",hint:"Ferramentas exclusivas do Mestre para administrar a biblioteca.",icon:"fas fa-tools",type:CodexAdminSettings,restricted:true});
 }
 export async function openCodex(){registerCodexSettings();render();}
 export async function installCodexContent(){ui.notifications.info("Use as abas do Codex para importar os arquivos JSON de cada categoria.");return {total:library().entries.length};}
