@@ -30,11 +30,13 @@ function shell(data,active){
  <footer class="vc-panel-footer"><span>VTM5e Codex • Conteúdo local do mundo</span><button type="button" data-action="export">Exportar biblioteca JSON</button></footer></section></main><footer class="vc-bottom"><span>VAMPIRE</span><small>WORLD OF DARKNESS • V5</small></footer></div>`;
 }
 
+function entryField(e,key){
+ const aliases={description:["description","description_pt"],cost:["cost","cost_pt"],dicePools:["dicePools","dice_pools_pt","dicePool"],system:["system","system_pt"],duration:["duration","duration_pt"],prerequisites:["prerequisites","prerequisites_pt","prerequisite"],amalgam:["amalgam","amalgam_pt"]};
+ for(const k of aliases[key]||[key])if(e?.[k]!==undefined&&e[k]!==null&&String(e[k]).trim()!=="")return e[k];
+ return "";
+}
 function entryToItemSource(e){
- const blocks=[
-  ["Descrição",e.description],["Custo",e.cost],["Parada de Dados",e.dicePools],
-  ["Sistema",e.system],["Duração",e.duration],["Pré-requisitos",e.prerequisites],["Amálgama",e.amalgam]
- ].filter(([,v])=>v).map(([label,value])=>`<h3>${esc(label)}</h3><p>${esc(value).replace(/\\n/g,"<br>")}</p>`).join("");
+ const blocks=[["Descrição",entryField(e,"description")],["Custo",entryField(e,"cost")],["Parada de Dados",entryField(e,"dicePools")],["Sistema",entryField(e,"system")],["Duração",entryField(e,"duration")],["Pré-requisitos",entryField(e,"prerequisites")],["Amálgama",entryField(e,"amalgam")]].filter(([,v])=>v).map(([label,value])=>`<section class="vc-sheet-section"><h3>${esc(label)}</h3><p>${esc(value).replace(/\\n/g,"<br>")}</p></section>`).join("");
  const disciplineKey=({Animalism:"animalism",Auspex:"auspex","Blood Sorcery":"sorcery",Celerity:"celerity",Dominate:"dominate",Fortitude:"fortitude",Obfuscate:"obfuscate",Oblivion:"oblivion",Potence:"potence",Presence:"presence",Protean:"protean"})[e.discipline]||String(e.discipline||"").toLowerCase();
  return {name:e.name,type:"power",img:"icons/magic/perception/eye-ringed-glow-angry-large-red.webp",system:{level:Number(e.level)||1,cost:0,discipline:disciplineKey,selected:false,dicepool:{},description:blocks,macroid:""},flags:{[MODULE_ID]:{imported:true,sourceEntry:e}}};
 }
@@ -97,31 +99,27 @@ function bind(html,active){
 
  root.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>{
   const e=library().entries.find(x=>(x.id||x.name)===b.dataset.edit);if(!e)return;
-  const detail=field=>esc(e[field]||"—").replace(/\\n/g,"<br>");
-  const content=`<div class="vc-detail">
-   <p><b>Descrição</b><br>${detail("description")}</p>
-   <p><b>Custo</b><br>${detail("cost")}</p>
-   <p><b>Parada de Dados</b><br>${detail("dicePools")}</p>
-   <p><b>Sistema</b><br>${detail("system")}</p>
-   <p><b>Duração</b><br>${detail("duration")}</p>
-   <p><b>Pré-requisitos</b><br>${detail("prerequisites")}</p>
-   <p><b>Amálgama</b><br>${detail("amalgam")}</p>
-   <button type="button" class="vc-add-to-sheet"><i class="fas fa-user-plus"></i> Adicionar à ficha selecionada</button>
-   <small>Selecione um token antes de adicionar o poder à ficha.</small>
+  const labels=[["Descrição","description"],["Custo","cost"],["Parada de Dados","dicePools"],["Sistema","system"],["Duração","duration"],["Pré-requisitos","prerequisites"],["Amálgama","amalgam"]];
+  const sections=labels.map(([label,key])=>{const value=entryField(e,key);return `<section class="vc-detail-section"><h3>${esc(label)}</h3><p>${value?esc(value).replace(/\\n/g,"<br>"):'<span class="vc-empty-value">Não informado neste registro.</span>'}</p></section>`;}).join("");
+  const content=`<div class="vc-detail-card">
+   <header class="vc-detail-header"><span class="vc-detail-kicker">${esc(e.discipline||e.category||"VTM5e CODEX")} ${e.level?" • NÍVEL "+e.level:""}</span><h2>${esc(e.name)}</h2>${e.page?`<small>Referência: página ${esc(e.page)}</small>`:""}</header>
+   <div class="vc-detail-content">${sections}</div>
+   <div class="vc-detail-actions"><button type="button" class="vc-add-to-sheet"><i class="fas fa-user-plus"></i><span>Adicionar à ficha</span></button><small>Selecione um token no cenário antes de adicionar este poder.</small></div>
   </div>`;
-  const dlg=new Dialog({title:e.name,content,buttons:{close:{label:"Fechar"}},render:html=>{
+  const dlg=new Dialog({title:"VTM5e Codex • "+e.name,content,buttons:{close:{label:"Fechar"}},render:html=>{
     html.find(".vc-add-to-sheet").on("click",async()=>{
       try{
        if(game.system.id!=="wod5e")throw new Error("A importação para ficha requer o sistema World of Darkness 5e.");
        const actor=canvas.tokens.controlled[0]?.actor;
        if(!actor)throw new Error("Selecione um token com uma ficha antes de adicionar o poder.");
        const source=entryToItemSource(e);
-       await actor.createEmbeddedDocuments("Item",[source]);
-       ui.notifications.info(e.name+" foi adicionado à ficha de "+actor.name+".");
+       const existing=actor.items.find(i=>i.type==="power"&&i.name===e.name);
+       if(existing)await existing.update(source);else await actor.createEmbeddedDocuments("Item",[source]);
+       ui.notifications.info(e.name+" foi adicionado/atualizado na ficha de "+actor.name+".");
        dlg.close();
       }catch(err){console.error(err);ui.notifications.error(err.message);}
     });
-  }});dlg.render(true);
+  }},{width:650,height:720,resizable:true,classes:["vtm5e-codex-detail"]});dlg.render(true);
  }));
 }
 
