@@ -22,19 +22,15 @@ function addCodexButton(_app, html) {
   });
 
 
-  const importButton = document.createElement("button");
-  importButton.type = "button";
-  importButton.className = "vtm5e-codex-import";
-  importButton.innerHTML = '<i class="fas fa-file-import"></i> Importar conteúdo';
-  importButton.addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); openImporter(); });
+
 
   const header = root.querySelector(".directory-header");
   const actions = header?.querySelector(".header-actions");
-  if (actions) actions.append(button, importButton);
-  else if (header) header.append(button, importButton);
+  if (actions) actions.append(button);
+  else if (header) header.append(button);
   else {
     const content = root.querySelector(".window-content") || root;
-    content.prepend(importButton, button);
+    content.prepend(button);
   }
 }
 
