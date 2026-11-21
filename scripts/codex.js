@@ -35,10 +35,22 @@ function entryField(e,key){
  for(const k of aliases[key]||[key])if(e?.[k]!==undefined&&e[k]!==null&&String(e[k]).trim()!=="")return e[k];
  return "";
 }
+function dicepoolFromEntry(e){
+ const raw=String(entryField(e,"dicePools")||"").trim();
+ if(!raw||/^(none|nenhuma|não se aplica|n\\/a)/i.test(raw))return {};
+ const userPool=raw.split(/\\s+(?:vs\\.?|versus|contra)\\s+/i)[0];
+ const aliases={strength:"attributes.strength",dexterity:"attributes.dexterity",stamina:"attributes.stamina",charisma:"attributes.charisma",manipulation:"attributes.manipulation",composure:"attributes.composure",intelligence:"attributes.intelligence",wits:"attributes.wits",resolve:"attributes.resolve",
+ "animal ken":"skills.animalken",animalken:"skills.animalken","empathy with animals":"skills.animalken","empatia com animais":"skills.animalken",
+ athletics:"skills.athletics",brawl:"skills.brawl",craft:"skills.craft",drive:"skills.drive",firearms:"skills.firearms",melee:"skills.melee",larceny:"skills.larceny",stealth:"skills.stealth",survival:"skills.survival",etiquette:"skills.etiquette",insight:"skills.insight",intimidation:"skills.intimidation",leadership:"skills.leadership",performance:"skills.performance",persuasion:"skills.persuasion",streetwise:"skills.streetwise",subterfuge:"skills.subterfuge",academics:"skills.academics",awareness:"skills.awareness",finance:"skills.finance",investigation:"skills.investigation",medicine:"skills.medicine",occult:"skills.occult",politics:"skills.politics",science:"skills.science",technology:"skills.technology"};
+ const disciplineKeys={animalism:"animalism",auspex:"auspex","blood sorcery":"sorcery",celerity:"celerity",dominate:"dominate",fortitude:"fortitude",obfuscate:"obfuscate",oblivion:"oblivion",potence:"potence",presence:"presence",protean:"protean"};
+ const paths=[];
+ for(const part of userPool.split(/\\s*\\+\\s*/).map(x=>x.trim()).filter(Boolean)){const key=part.toLowerCase();const path=aliases[key]||(disciplineKeys[key]?"disciplines."+disciplineKeys[key]:null);if(path&&!paths.includes(path))paths.push(path);}
+ return Object.fromEntries(paths.map((path,index)=>["dice"+(index+1),{path}]));
+}
 function entryToItemSource(e){
  const blocks=[["Descrição",entryField(e,"description")],["Custo",entryField(e,"cost")],["Parada de Dados",entryField(e,"dicePools")],["Sistema",entryField(e,"system")],["Duração",entryField(e,"duration")],["Pré-requisitos",entryField(e,"prerequisites")],["Amálgama",entryField(e,"amalgam")]].filter(([,v])=>v).map(([label,value])=>`<section class="vc-sheet-section"><h3>${esc(label)}</h3><p>${esc(value).replace(/\\n/g,"<br>")}</p></section>`).join("");
  const disciplineKey=({Animalism:"animalism",Auspex:"auspex","Blood Sorcery":"sorcery",Celerity:"celerity",Dominate:"dominate",Fortitude:"fortitude",Obfuscate:"obfuscate",Oblivion:"oblivion",Potence:"potence",Presence:"presence",Protean:"protean"})[e.discipline]||String(e.discipline||"").toLowerCase();
- return {name:e.name,type:"power",img:"icons/magic/perception/eye-ringed-glow-angry-large-red.webp",system:{level:Number(e.level)||1,cost:0,discipline:disciplineKey,selected:false,dicepool:{},description:blocks,macroid:""},flags:{[MODULE_ID]:{imported:true,sourceEntry:e}}};
+ return {name:e.name,type:"power",img:"icons/magic/perception/eye-ringed-glow-angry-large-red.webp",system:{level:Number(e.level)||1,cost:0,discipline:disciplineKey,selected:false,dicepool:dicepoolFromEntry(e),description:blocks,macroid:""},flags:{[MODULE_ID]:{imported:true,sourceEntry:e}}};
 }
 
 function downloadJson(payload,filename){const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);}
@@ -98,7 +110,7 @@ function bind(html,active){
    section("Pré-requisitos",entry.prerequisites||entry.prerequisites_pt),
    section("Amálgama",entry.amalgam||entry.amalgam_pt)
   ].join("");
-  const source={name:entry.name,type:"power",img:"icons/magic/perception/eye-ringed-glow-angry-large-red.webp",system:{level:Number(entry.level||0),cost:0,discipline:disciplineKey,selected:false,dicepool:{},description,macroid:""},flags:{[MODULE_ID]:{imported:true,entryId:entry.id,discipline:entry.discipline,source:entry.source||"",macro:entry.macro||{}}}};
+  const source={name:entry.name,type:"power",img:"icons/magic/perception/eye-ringed-glow-angry-large-red.webp",system:{level:Number(entry.level||0),cost:0,discipline:disciplineKey,selected:false,dicepool:dicepoolFromEntry(entry),description,macroid:""},flags:{[MODULE_ID]:{imported:true,entryId:entry.id,discipline:entry.discipline,source:entry.source||"",macro:entry.macro||{}}}};
   try{
    const existing=actor.items.find(i=>i.type==="power"&&i.name===entry.name);
    if(existing){await existing.update(source);ui.notifications.info(entry.name+" atualizado na ficha de "+actor.name+".");}
