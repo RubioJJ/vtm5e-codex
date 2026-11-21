@@ -112,3 +112,20 @@
 .vc-editor-field small{font-size:10px;color:#b9a8b0}
 .vc-editor-wide{grid-column:1/-1}
 @media(max-width:620px){.vc-editor-grid{grid-template-columns:1fr}.vc-editor-wide{grid-column:auto}}
+
+/* v0.6.3 — player-specific permissions panel */
+.vtm5e-admin-settings{display:flex;flex-direction:column;gap:12px;color:#eee}
+.vtm5e-admin-settings>p{font-size:12px;line-height:1.5;color:#cdbdc5}
+.vct-permission-group{padding:12px;border:1px solid #674653;border-radius:8px;background:#211d25}
+.vct-permission-group h3{margin:0 0 6px;color:#f0a58e;font-size:13px}
+.vct-permission-group p{margin:0 0 10px;color:#c7b8bf;font-size:11px;line-height:1.45}
+.vct-user-list{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.vct-user{display:flex;align-items:center;gap:8px;padding:7px 9px;border:1px solid #493541;border-radius:6px;background:#17171e;font-size:12px}
+.vct-user input{accent-color:#a44461}
+.vct-user span{flex:1;color:#f2e8e9}
+.vct-user small{font-size:10px;color:#a997a0}
+.vct-admin-actions{display:flex;gap:8px;flex-wrap:wrap}
+.vct-admin-actions button{padding:9px 12px;border:1px solid #76505c;border-radius:7px;background:#302832;color:#f6e9e4}
+.vct-admin-actions .vct-save-permissions{background:#963d5a;border-color:#e79a8c}
+.vct-admin-actions .vct-danger{margin-left:auto}
+@media(max-width:560px){.vct-user-list{grid-template-columns:1fr}.vct-admin-actions button{flex:1}.vct-admin-actions .vct-danger{margin-left:0}}
