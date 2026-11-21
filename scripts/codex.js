@@ -1,138 +1,65 @@
 const MODULE_ID = "vtm5e-codex";
-const ITEM_PACK = "world.vtm5e-codex-disciplinas";
-const MACRO_PACK = "world.vtm5e-codex-macros";
-const DISCIPLINE_KEYS = { Animalism:"animalism", Auspex:"auspex", "Blood Sorcery":"sorcery", Celerity:"celerity", Dominate:"dominate", Fortitude:"fortitude", Obfuscate:"obfuscate", Oblivion:"oblivion", Potence:"potence", Presence:"presence", Protean:"protean" };
-async function loadCatalog() {
-  const response = await fetch(`modules/${MODULE_ID}/data/powers.json`);
-  if (!response.ok) throw new Error(`Falha ao carregar catálogo (${response.status}).`);
-  return response.json();
+const SETTING_KEY = "libraryData";
+const SECTIONS = [
+  {id:"disciplines",label:"Disciplinas",types:["power"]},
+  {id:"rituals",label:"Rituais",types:["ritual"]},
+  {id:"ceremonies",label:"Cerimônias",types:["ceremony"]},
+  {id:"clans",label:"Clãs e Banes",types:["clan"]},
+  {id:"advantages",label:"Vantagens",types:["advantage"]},
+  {id:"disadvantages",label:"Desvantagens",types:["disadvantage"]},
+  {id:"backgrounds",label:"Antecedentes",types:["background"]},
+  {id:"predators",label:"Tipos de Predador",types:["predatorType"]}
+];
+const emptyLibrary = () => ({schemaVersion:2,entries:[]});
+function library(){ return foundry.utils.deepClone(game.settings.get(MODULE_ID,SETTING_KEY) || emptyLibrary()); }
+function esc(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function activeActor(){return canvas.tokens.controlled[0]?.actor ?? game.user.character ?? null;}
+function sectionEntries(data,section){return data.entries.filter(e=>section.types.includes(e.type));}
+function shell(data,active="disciplines"){
+ const section=SECTIONS.find(s=>s.id===active)||SECTIONS[0];
+ const entries=sectionEntries(data,section);
+ return `<div class="vtm5e-shell">
+ <header class="vc-top"><div class="vc-brand"><span class="vc-sigil">✧</span><div><small>VAMPIRE • THE MASQUERADE</small><h1>VTM5e Codex</h1><p>Biblioteca pessoal da Crônica</p></div></div><div class="vc-head-actions"><span class="vc-counter">${data.entries.length} registros</span><button type="button" class="vc-close" data-action="close">×</button></div></header>
+ <section class="vc-status"><div><small>CONTEÚDO CADASTRADO</small><strong>${data.entries.length}</strong><span>entradas na biblioteca</span></div><div><small>SEÇÃO ATUAL</small><strong>${entries.length}</strong><span>${esc(section.label.toLowerCase())}</span></div><div><small>FORMATO</small><strong>JSON v2</strong><span>importação por categoria</span></div></section>
+ <nav class="vc-tabs">${SECTIONS.map(s=>`<button type="button" class="${s.id===active?"active":""}" data-tab="${s.id}">${esc(s.label)}</button>`).join("")}</nav>
+ <main class="vc-main"><section class="vc-panel">
+ <div class="vc-panel-heading"><div><small>BIBLIOTECA • ${esc(section.label.toUpperCase())}</small><h2>${esc(section.label)}</h2><p>Pesquise, revise e organize o conteúdo da sua crônica.</p></div><label class="vc-import-button">＋ Importar JSON<input type="file" accept=".json,application/json" data-import-section="${section.id}" hidden></label></div>
+ <div class="vc-toolbar"><input type="search" placeholder="Buscar por nome..." data-search><select data-filter-level><option value="">Todos os níveis</option>${[1,2,3,4,5].map(n=>`<option value="${n}">Nível ${n}</option>`).join("")}</select><span>${entries.length} registros</span></div>
+ <div class="vc-entry-list">${entries.length?entries.map(e=>`<article class="vc-entry" data-name="${esc(e.name).toLowerCase()}" data-level="${e.level||""}"><div class="vc-entry-icon">${section.id==="clans"?"♜":section.id==="predators"?"♟":section.id==="advantages"?"✦":section.id==="disadvantages"?"✧":section.id==="rituals"?"⌁":section.id==="ceremonies"?"☽":"◆"}</div><div class="vc-entry-copy"><strong>${esc(e.name||"Sem nome")}</strong><span>${esc(e.discipline||e.category||section.label)} ${e.level? "• Nível "+e.level:""} ${e.page?"• p. "+e.page:""}</span><small>${e.description?esc(e.description).slice(0,150):"Descrição ainda não preenchida"}</small></div><button type="button" class="vc-edit" data-edit="${esc(e.id||e.name)}">Ver</button></article>`).join(""):`<div class="vc-empty"><div class="vc-empty-glyph">✧</div><h3>Esta seção ainda está vazia</h3><p>Importe o JSON correspondente para adicionar conteúdo à sua biblioteca.</p><label class="vc-import-button secondary">Selecionar arquivo<input type="file" accept=".json,application/json" data-import-section="${section.id}" hidden></label></div>`}</div>
+ <footer class="vc-panel-footer"><span>VTM5e Codex • Conteúdo local do mundo</span><button type="button" data-action="export">Exportar biblioteca JSON</button></footer>
+ </section></main><footer class="vc-bottom"><span>VAMPIRE</span><small>WORLD OF DARKNESS • V5</small></footer></div>`;
 }
-function selectedActor() { return canvas.tokens.controlled[0]?.actor ?? game.user.character ?? null; }
-function dicepoolObject(power) {
-  const paths = power.dicepoolPaths || [];
-  return Object.fromEntries(paths.map((path, index) => [`codex${index}`, { path }]));
+function render(active="disciplines"){
+ const data=library();
+ const content=shell(data,active);
+ new Dialog({title:"VTM5e Codex",content,buttons:{close:{label:"Fechar"}},default:"close",render:html=>bind(html,active)}, {width:1120,height:820,resizable:true,classes:["wod5e","vtm5e-codex-window","vtm5e-codex-v2"]}).render(true);
 }
-function itemData(power) {
-  const cost = Number(power.rouseCost || 0);
-  return {
-    name: power.name, type: "power", img: "icons/magic/perception/eye-ringed-glow-angry-large-red.webp",
-    system: { level: power.level, cost, discipline: DISCIPLINE_KEYS[power.discipline], selected: false, dicepool: dicepoolObject(power),
-      description: `<h3>${power.discipline} • Nível ${power.level}</h3><p>${power.summary || power.sourceSummary}</p><p><strong>Custo:</strong> ${power.mechanics.cost}</p><p><strong>Parada:</strong> ${power.mechanics.dicePool}</p><p><strong>Duração:</strong> ${power.mechanics.duration}</p><p><em>Referência: All the Disciplines for Vampire V5, p. ${power.page}. Consulte o livro para exceções, pré-requisitos e a descrição completa.</em></p>`,
-      macroid: "" },
-    flags: { [MODULE_ID]: { discipline: power.discipline, level: power.level, sourcePage: power.page, catalogEntry: true, cost, dicePoolPaths: power.dicepoolPaths || [] } }
-  };
+function bind(html,active){
+ const root=html[0]||html;
+ root.querySelectorAll("[data-tab]").forEach(btn=>btn.addEventListener("click",()=>{root.closest(".app")?.querySelector(".window-content")?.replaceChildren();render(btn.dataset.tab);root.closest(".app")?.querySelector(".header-button.close")?.click();}));
+ root.querySelectorAll("[data-import-section]").forEach(input=>input.addEventListener("change",async()=>{
+  const file=input.files?.[0];if(!file)return;
+  try{
+   const parsed=JSON.parse(await file.text());
+   const entries=Array.isArray(parsed.entries)?parsed.entries:Array.isArray(parsed.powers)?parsed.powers:null;
+   if(!entries)throw new Error("JSON sem a lista 'entries' ou 'powers'.");
+   const target=SECTIONS.find(s=>s.id===input.dataset.importSection);
+   const valid=entries.filter(e=>target.types.includes(e.type)||(!e.type&&target.id==="disciplines"&&e.discipline));
+   if(!valid.length)throw new Error("Nenhum registro compatível com a seção "+target.label+".");
+   const data=library();const keys=new Set(data.entries.map(e=>(e.type||"power")+"|"+e.name));
+   let added=0,updated=0;
+   for(const entry of valid){const type=entry.type||(target.id==="disciplines"?"power":target.types[0]);const normalized={...entry,type};const key=type+"|"+normalized.name;const index=data.entries.findIndex(e=>(e.type||"power")+"|"+e.name===key);if(index>=0){data.entries[index]={...data.entries[index],...normalized};updated++;}else{data.entries.push(normalized);added++;}}
+   await game.settings.set(MODULE_ID,SETTING_KEY,data);
+   ui.notifications.info(`Importação concluída: ${added} novos, ${updated} atualizados.`);
+   render(active);root.closest(".app")?.querySelector(".header-button.close")?.click();
+  }catch(err){console.error(err);ui.notifications.error(err.message);}
+ }));
+ const search=root.querySelector("[data-search]");const level=root.querySelector("[data-filter-level]");
+ const filter=()=>root.querySelectorAll(".vc-entry").forEach(row=>{row.hidden=!(row.dataset.name||"").includes((search.value||"").toLowerCase())||!!level.value&&row.dataset.level!==level.value;});
+ search?.addEventListener("input",filter);level?.addEventListener("change",filter);
+ root.querySelector("[data-action='export']")?.addEventListener("click",()=>{const blob=new Blob([JSON.stringify(library(),null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="vtm5e-codex-library.json";a.click();URL.revokeObjectURL(url);});
+ root.querySelector("[data-action='close']")?.addEventListener("click",()=>root.closest(".app")?.querySelector(".header-button.close")?.click());
+ root.querySelectorAll("[data-edit]").forEach(btn=>btn.addEventListener("click",()=>{const entry=library().entries.find(e=>(e.id||e.name)===btn.dataset.edit);if(entry)new Dialog({title:entry.name,content:`<div class="vc-detail"><p><b>Tipo:</b> ${esc(entry.type)}</p><p><b>Descrição:</b> ${esc(entry.description||"Não preenchida")}</p><p><b>Cost:</b> ${esc(entry.cost||"—")}</p><p><b>Dice Pools:</b> ${esc(entry.dicePools||"—")}</p><p><b>System:</b> ${esc(entry.system||"—")}</p><p><b>Duration:</b> ${esc(entry.duration||"—")}</p></div>`,buttons:{close:{label:"Fechar"}}}).render(true);}));
 }
-function macroCommand(power) {
- const name=JSON.stringify(power.name);
- const summary=JSON.stringify(power.summary || power.sourceSummary || "");
- const paths=JSON.stringify(power.dicepoolPaths || []);
- const cost=Number(power.rouseCost||0);
- const discipline=JSON.stringify(DISCIPLINE_KEYS[power.discipline]);
- const title=JSON.stringify(`${power.name} • ${power.discipline}`);
- return `// VTM5e Codex — macro integrada ao sistema World of Darkness 5e
-const actor = canvas.tokens.controlled[0]?.actor ?? game.user.character;
-if (!actor) { ui.notifications.warn("Selecione um token ou defina um personagem."); return; }
-if (game.system.id !== "wod5e" || !WOD5E?.api?.Roll) { ui.notifications.error("Esta macro requer World of Darkness 5e."); return; }
-const powerName = ${name};
-const flavor = ${summary};
-const paths = ${paths};
-const discipline = ${discipline};
-const cost = ${cost};
-const title = ${title};
-const valuePaths = paths.map(path => path + ".value");
-const selectors = ["disciplines", "disciplines." + discipline];
-let basicDice = 0;
-if (valuePaths.length) basicDice = await WOD5E.api.getBasicDice({ valuePaths, actor });
-let advancedDice = await WOD5E.api.getAdvancedDice({ actor });
-const hasPool = valuePaths.length > 0;
-if (actor.system.gamesystem === "vampire" && actor.type !== "ghoul") {
-  advancedDice = Math.min(basicDice, advancedDice);
-  basicDice = Math.max(basicDice - advancedDice, 0);
-} else if (actor.system.gamesystem === "werewolf") {
-  advancedDice = Math.min(basicDice, advancedDice);
-  basicDice = Math.max(basicDice - advancedDice, 0);
-}
-if (hasPool) {
-  await WOD5E.api.Roll({
-    basicDice, advancedDice, actor, data: actor.system, title,
-    flavor: flavor + "\\nParada: " + paths.join(" + "),
-    selectors, increaseHunger: false, difficulty: 0
-  });
-} else {
-  ChatMessage.create({ speaker: ChatMessage.getSpeaker({actor}), content: "<h3>" + powerName + "</h3><p>" + flavor + "</p><p>Poder sem parada automática indicada; consulte a referência para sua resolução.</p>" });
-}
-if (cost > 0 && actor.type === "vampire") {
-  await WOD5E.api.Roll({
-    advancedDice: cost, actor, data: actor.system,
-    title: "Teste de Despertar — " + powerName,
-    flavor: "Custo de ativação do poder", disableBasicDice: true,
-    quickRoll: true, increaseHunger: true, selectors: ["rouse"]
-  });
-} else if (cost > 0 && actor.type === "ghoul" && Number(${power.level}) > 1) {
-  const health = actor.system.health;
-  await actor.update({ "system.health.aggravated": Math.min(Number(health.aggravated || 0) + 1, Number(health.max || 0)) });
-}
-`;
-}
-async function ensurePack(collection, label, type) {
-  let pack = game.packs.get(collection);
-  if (pack) return pack;
-  if (!game.user.isGM) throw new Error("Somente o Narrador (GM) pode criar os compêndios no mundo.");
-  return CompendiumCollection.createCompendium({ name: collection.split(".").at(-1), label, type, package: "world", system: "wod5e" });
-}
-export async function installCodexContent() {
-  if (game.system.id !== "wod5e") throw new Error("Este módulo requer World of Darkness 5e.");
-  if (!game.user.isGM) throw new Error("A criação dos compêndios precisa ser feita pelo Narrador (GM).");
-  const catalog = await loadCatalog();
-  const itemPack = await ensurePack(ITEM_PACK, "VTM5e Codex — Disciplinas", "Item");
-  const macroPack = await ensurePack(MACRO_PACK, "VTM5e Codex — Macros de Poderes", "Macro");
-  const itemDocs = await itemPack.getDocuments();
-  const macroDocs = await macroPack.getDocuments();
-  const itemMap = new Map(itemDocs.map(doc => [doc.name, doc]));
-  const macroMap = new Map(macroDocs.map(doc => [doc.name, doc]));
-  let createdItems = 0, updatedItems = 0, createdMacros = 0, updatedMacros = 0;
-  for (const power of catalog.disciplines) {
-    const item = itemMap.get(power.name);
-    const source = itemData(power);
-    if (item) { await item.update(source); updatedItems++; }
-    else { await Item.implementation.createDocuments([source], { pack: itemPack.collection }); createdItems++; }
-    const macroName = `VTM5e | ${power.name}`;
-    const macroSource = { name: macroName, type: "script", img: "icons/svg/dice-target.svg", command: macroCommand(power), ownership: { default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER }, flags: { [MODULE_ID]: { discipline: power.discipline, power: power.name, level: power.level, sourcePage: power.page } } };
-    const macro = macroMap.get(macroName);
-    if (macro) { await macro.update(macroSource); updatedMacros++; }
-    else { await Macro.implementation.createDocuments([macroSource], { pack: macroPack.collection }); createdMacros++; }
-  }
-  ui.notifications.info(`VTM5e Codex atualizado: ${createdItems} poderes e ${createdMacros} macros novos; ${updatedItems} poderes e ${updatedMacros} macros atualizados.`);
-  return { total: catalog.disciplines.length, createdItems, updatedItems, createdMacros, updatedMacros };
-}
-export async function openCodex() {
-  let catalog;
-  try { catalog = await loadCatalog(); } catch (error) { console.error(error); return ui.notifications.error(error.message); }
-  const disciplines = [...new Set(catalog.disciplines.map(power => power.discipline))];
-  const content = await renderTemplate(`modules/${MODULE_ID}/templates/codex.hbs`, { disciplines, powers: catalog.disciplines, total: catalog.disciplines.length });
-  new Dialog({ title: "VTM5e Codex — Biblioteca de Disciplinas", content,
-    buttons: { install: { label: "Criar / atualizar compêndios e macros", callback: async () => { try { await installCodexContent(); } catch (error) { console.error(error); ui.notifications.error(error.message); } } }, close: { label: "Fechar" } },
-    default: "close", render: html => bindControls(html, catalog)
-  }, { width: 900, height: 740, resizable: true, classes: ["wod5e", "vtm5e-codex-window"] }).render(true);
-}
-function bindControls(html, catalog) {
-  const root = html[0] ?? html;
-  const search = root.querySelector("[name='codex-search']");
-  const discipline = root.querySelector("[name='codex-discipline']");
-  const level = root.querySelector("[name='codex-level']");
-  const rows = [...root.querySelectorAll("[data-power-name]")];
-  const filter = () => {
-    const query = (search.value || "").toLocaleLowerCase("pt-BR");
-    rows.forEach(row => { row.hidden = !row.dataset.powerName.toLocaleLowerCase("pt-BR").includes(query) || (!!discipline.value && row.dataset.discipline !== discipline.value) || (!!level.value && row.dataset.level !== level.value); });
-  };
-  search.addEventListener("input", filter); discipline.addEventListener("change", filter); level.addEventListener("change", filter);
-  root.querySelectorAll("[data-add-power]").forEach(button => button.addEventListener("click", async () => {
-    const power = catalog.disciplines.find(entry => entry.name === button.dataset.addPower);
-    const actor = selectedActor();
-    if (!actor) return ui.notifications.warn("Selecione um token ou defina um personagem para adicionar o poder.");
-    const existing = actor.items.find(item => item.name === power.name && item.getFlag(MODULE_ID, "catalogEntry"));
-    if (existing) await existing.update(itemData(power));
-    else await actor.createEmbeddedDocuments("Item", [itemData(power)]);
-    ui.notifications.info(`${power.name} sincronizado na ficha de ${actor.name}.`);
-  }));
-}
+export async function openCodex(){if(!game.settings.settings.has(`${MODULE_ID}.${SETTING_KEY}`))game.settings.register(MODULE_ID,SETTING_KEY,{scope:"world",config:false,type:Object,default:emptyLibrary()});render();}
+export async function installCodexContent(){ui.notifications.info("A biblioteca personalizada já está ativa. A criação de itens arrastáveis para fichas será habilitada após validar o mapeamento dos campos do sistema.");return {total:library().entries.length};}
