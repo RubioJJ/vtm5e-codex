@@ -29,7 +29,7 @@ function shell(data,active){
  const sections=visibleSections();const s=sections.find(x=>x.id===active)||sections[0];const entries=sectionEntries(data,s);
  return `<div class="vtm5e-shell">
  <header class="vc-top"><div class="vc-brand"><span class="vc-sigil">✧</span><div><small>VAMPIRE • THE MASQUERADE</small><h1>VTM5e Codex</h1><p>Biblioteca pessoal da Crônica</p></div></div><div class="vc-head-actions"><span class="vc-counter">${data.entries.length} registros</span><button type="button" class="vc-close" data-action="close">×</button></div></header>
- <section class="vc-status"><div><small>CONTEÚDO CADASTRADO</small><strong>${data.entries.length}</strong><span>entradas na biblioteca</span></div><div><small>SEÇÃO ATUAL</small><strong>${entries.length}</strong><span>${esc(s.label.toLowerCase())}</span></div><div><small>ACESSO</small><strong>${game.user.isGM?"Mestre":game.settings.get(MODULE_ID,"playersSeeElderPowers")?"Compartilhado":"Jogador"}</strong><span>permissões do módulo</span></div></section>
+ <section class="vc-status"><div><small>CONTEÚDO CADASTRADO</small><strong>${data.entries.length}</strong><span>entradas na biblioteca</span></div><div><small>SEÇÃO ATUAL</small><strong>${entries.length}</strong><span>${esc(s.label.toLowerCase())}</span></div><div><small>ACESSO</small><strong>${game.user.isGM?"Mestre":"Jogador"}</strong><span>permissões do módulo</span></div></section>
  <nav class="vc-tabs">${sections.map(x=>`<button type="button" class="${x.id===s.id?"active":""}" data-tab="${x.id}">${esc(x.label)}</button>`).join("")}</nav>
  <main class="vc-main"><section class="vc-panel"><div class="vc-panel-heading"><div><small>BIBLIOTECA • ${esc(s.label.toUpperCase())}</small><h2>${esc(s.label)}</h2><p>Pesquise, revise e organize o conteúdo da sua crônica.</p></div><label class="vc-import-button">＋ Importar JSON<input type="file" accept=".json,application/json" data-import-section="${s.id}" hidden></label></div>
  <div class="vc-toolbar"><input type="search" placeholder="Buscar por nome..." data-search>${s.id==="disciplines"?`<select data-filter-discipline><option value="">Todas as Disciplinas</option>${[...new Set(entries.map(e=>e.discipline).filter(Boolean))].sort((a,b)=>a.localeCompare(b)).map(d=>`<option value="${esc(d)}">${esc(d)}</option>`).join("")}</select>`:""}<select data-filter-level><option value="">Todos os níveis</option>${[1,2,3,4,5].map(n=>`<option value="${n}">Nível ${n}</option>`).join("")}</select><span>${entries.length} registros</span></div>
@@ -269,5 +269,8 @@ export function registerCodexSettings(){
  for(const key of ["editorUsers","elderAccessUsers","methuselahAccessUsers"]){if(!game.settings.settings.has(MODULE_ID+"."+key))game.settings.register(MODULE_ID,key,{scope:"world",config:false,type:Array,default:[]});}
  if(!game.settings.menus.has(MODULE_ID+".adminSettings"))game.settings.registerMenu(MODULE_ID,"adminSettings",{name:"Configurações administrativas do Codex",label:"Abrir configurações",hint:"Escolha jogadores que podem editar a biblioteca e acessar poderes restritos de Anciões e Matusalém.",icon:"fas fa-users-cog",type:CodexAdminSettings,restricted:true});
 }
-export async function openCodex(){registerCodexSettings();render();}
+export async function openCodex(){
+ try{registerCodexSettings();render();}
+ catch(error){console.error("VTM5e Codex | Não foi possível abrir a biblioteca.",error);ui.notifications.error("Não foi possível abrir o VTM5e Codex: "+(error.message||error));}
+}
 export async function installCodexContent(){ui.notifications.info("Use as abas do Codex para importar os arquivos JSON de cada categoria.");return {total:library().entries.length};}
